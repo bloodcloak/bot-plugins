@@ -15,7 +15,7 @@ class roleResponse(commands.Cog):
         error = getattr(error, "original", error)
         if isinstance(error, commands.CheckFailure):
             await ctx.message.delete()
-            return await ctx.send("Error: You don't have enough permissions to run this command!", delete_after=5)
+            return await ctx.send("Error: You don't have permission to run this command!", delete_after=5)
         raise error
 
     @commands.command()
