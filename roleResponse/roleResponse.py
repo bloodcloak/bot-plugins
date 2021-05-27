@@ -7,6 +7,8 @@ from core.models import PermissionLevel
 class roleResponse(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.logChannel = None
+        self.db = bot.api.get_plugin_partition(self)
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
@@ -21,7 +23,7 @@ class roleResponse(commands.Cog):
         valid_roles = ('map', 'pcmod', 'questmod', 'pcasset', 'questasset', 'trusted')
 
         if rolename not in valid_roles:
-            await ctx.send('Invalid Role. Pick one from: ' + ', '.join(valid_roles))
+            await ctx.send('Invalid Args. Usage: `?giverole <member> <rolename>` \nValid Rolenames: ' + ', '.join(valid_roles))
         else:
             if member == None:
                 await ctx.send('Error: No user defined')
@@ -53,14 +55,14 @@ class roleResponse(commands.Cog):
                 infoChannel = "<#843007832767856650>"
 
             else:
-                return await ctx.send('An Error occured when adding role: \'Role name not valid\' ')
+                return await ctx.send('An Error occured when adding role: `Role name not valid` ')
 
             # Role Processing =============================================
             try:
                 role = get(member.server.roles, name=nameRole)
                 await self.bot.add_roles(member, role)
             except:
-                return await ctx.send('An Error occured when adding role: \'Role Not Found\' \nPlease contact an Admin.')
+                return await ctx.send('An Error occured when adding role: `Role Not Found` \nPlease contact an Admin.')
 
             try:
                 if role_name != 'trusted':
@@ -90,7 +92,24 @@ class roleResponse(commands.Cog):
                         ).set_footer(text="This is an automated message. If you have any questions, DM me to open a ticket!")
                     )
             except discord.errors.Forbidden:
-                return await ctx.send('Role has been applied. User has not been notified as they do not have DM\'s open.') 
+                await self.log(
+                    guild=ctx.guild,
+                    embed=discord.Embed(
+                        title=f"{member} App for {nameRole} was Accepted",
+                        description=f"Accepted by {ctx.author.mention}. An error occured in sending confirmation.",
+                        color=discord.colour.gold(),
+                    ),
+                )
+                return await ctx.send('Role has been applied. User has not been notified as they do not have DM\'s open.')
+
+            await self.log(
+                guild=ctx.guild,
+                embed=discord.Embed(
+                    title=f"{member} App for {nameRole} was Accepted",
+                    description=f"Accepted by {ctx.author.mention}",
+                    color=discord.colour.green(),
+                ),
+            )
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
@@ -98,7 +117,7 @@ class roleResponse(commands.Cog):
         valid_roles = ('map', 'pcmod', 'questmod', 'pcasset', 'questasset', 'trusted')
 
         if rolename not in valid_roles:
-            await ctx.send('Invalid Role. Pick one from: ' + ', '.join(valid_roles))
+            await ctx.send('Invalid Args. Usage: `?denyrole <member> <rolename> [reason]` \nValid Rolenames: ' + ', '.join(valid_roles))
         else:
             if member == None:
                 await ctx.send('Error: No user defined')
@@ -136,12 +155,73 @@ class roleResponse(commands.Cog):
                             + (f" due to: {reason}\n\n" if reason else ".\n\n"),
                             "If you have any questions or believe this is a mistake, DM me to open a ticket!"
                         ),
-                        color=discord.colour.green(),
+                        color=discord.colour.red(),
                     ).set_footer(text="This is an automated message.")
                 )
 
             except discord.errors.Forbidden:
                 return await ctx.send('Error: User has not been notified as they do not have DM\'s open.') 
+
+        await self.log(
+            guild=ctx.guild,
+            embed=discord.Embed(
+                title=f"{member} App for {nameRole} was Declined",
+                description=f"{member} was declined by {ctx.author.mention}"
+                + (f" for: {reason}" if reason else "."),
+                color=discord.colour.red(),
+            ),
+        )
+
+
+    @commands.command(usage="<channel>")
+    @checks.has_permissions(PermissionLevel.OWNER)
+    async def setlog(self, ctx, channel: discord.TextChannel = None):
+        """Sets up a log channel."""
+        if channel == None:
+            return await ctx.send_help(ctx.command)
+
+        try:
+            await channel.send(
+                embed=discord.Embed(
+                    description=(
+                        "This channel has been set up to log role actions."
+                    ),
+                    color=self.bot.main_color,
+                )
+            )
+        except discord.errors.Forbidden:
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Error",
+                    description="I don't have enough permissions to write in that channel.",
+                    color=discord.Color.red(),
+                ).set_footer(text="Please fix the permissions.")
+            )
+        else:
+            await self.db.find_one_and_update(
+                {"_id": "logging"},
+                {"$set": {str(ctx.guild.id): channel.id}},
+                upsert=True,
+            )
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Success",
+                    description=f"{channel.mention} has been set up as log channel.",
+                    color=self.bot.main_color,
+                )
+            )
+    
+    async def log(self, guild: discord.Guild, embed: discord.Embed):
+        """Sends logs to the log channel."""
+        channel = await self.db.find_one({"_id": "logging"})
+        if channel == None:
+            return
+        if not str(guild.id) in channel:
+            return
+        channel = self.bot.get_channel(channel[str(guild.id)])
+        if channel == None:
+            return
+        return await channel.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(roleResponse(bot))
