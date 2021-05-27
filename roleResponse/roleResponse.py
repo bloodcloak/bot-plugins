@@ -167,7 +167,7 @@ class roleResponse(commands.Cog):
                         description=f"{member.mention}'s application for `{nameRole}` was declined by {ctx.author.mention}"
                         + (f" for: \n```{reason}```" if reason else ".")
                         + "\nAn error occured in sending confirmation to user.",
-                        color=discord.Colour.gold(),
+                        color=discord.Colour.dark_gold(),
                     ),
                 )
                 return await ctx.send('Error: User has not been notified as they do not have DM\'s open.') 
