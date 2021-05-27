@@ -95,8 +95,8 @@ class roleResponse(commands.Cog):
                 await self.log(
                     guild=ctx.guild,
                     embed=discord.Embed(
-                        title=f"{member} App for {nameRole} was Accepted",
-                        description=f"Accepted by {ctx.author.mention}. An error occured in sending confirmation.",
+                        title=f"{member} ({member.id})",
+                        description=f"{member.mention}'s application for {nameRole} was accepted by {ctx.author.mention}. \n An error occured in sending confirmation to user.",
                         color=discord.Colour.gold(),
                     ),
                 )
@@ -105,8 +105,8 @@ class roleResponse(commands.Cog):
             await self.log(
                 guild=ctx.guild,
                 embed=discord.Embed(
-                    title=f"{member} App for {nameRole} was Accepted",
-                    description=f"Accepted by {ctx.author.mention}",
+                    title=f"{member} ({member.id})",
+                    description=f"{member.mention}'s application for {nameRole} was accepted by {ctx.author.mention}",
                     color=discord.Colour.green(),
                 ),
             )
@@ -152,23 +152,33 @@ class roleResponse(commands.Cog):
                     embed=discord.Embed(
                         description=(
                             f"Unfortunately, your application for {nameRole} in the Beat Saber Commissions Center has been declined" 
-                            + (f" due to: {reason}\n\n" if reason else ".\n\n")
+                            + (f" due to: \n```{reason}```\n" if reason else ".\n\n")
                             + "If you have any questions or believe this is a mistake, DM me to open a ticket!"
                         ),
-                        color=discord.Colour.red(),
+                        color=discord.Colour.dark_orange(),
                     ).set_footer(text="This is an automated message.")
                 )
 
             except discord.errors.Forbidden:
+                await self.log(
+                    guild=ctx.guild,
+                    embed=discord.Embed(
+                        title=f"{member} ({member.id})",
+                        description=f"{member.mention}'s application for {nameRole} was declined by {ctx.author.mention}"
+                        + (f" for: \n```{reason}```" if reason else ".")
+                        + "\nAn error occured in sending confirmation to user.",
+                        color=discord.Colour.red(),
+                    ),
+                )
                 return await ctx.send('Error: User has not been notified as they do not have DM\'s open.') 
 
         await self.log(
             guild=ctx.guild,
             embed=discord.Embed(
-                title=f"{member} App for {nameRole} was Declined",
-                description=f"{member} was declined by {ctx.author.mention}"
-                + (f" for: {reason}" if reason else "."),
-                color=discord.Colour.red(),
+                title=f"{member} ({member.id})",
+                description=f"{member.mention}'s application for {nameRole} was declined by {ctx.author.mention}"
+                + (f" for: \n```{reason}```" if reason else "."),
+                color=discord.Colour.dark_orange(),
             ),
         )
 
