@@ -76,7 +76,7 @@ class roleResponse(commands.Cog):
                                 f"- Permission to talk in {infoChannel} so you can post your commission info\n\n"
                                 "Make sure to double check the rules in <#842919779357556766> before posting your info! If you have any questions, <#843007803706048543> will be happy to answer."
                             ),
-                            color=discord.colour.green(),
+                            color=discord.Colour.green(),
                         ).set_footer(text="This is an automated message. If you have any questions, DM me to open a ticket!")
                     )
                 else:
@@ -88,7 +88,7 @@ class roleResponse(commands.Cog):
                                 f"- Access to {infoChannel}\n"
                                 "- The Trusted Seller role\n"
                             ),
-                            color=discord.colour.green(),
+                            color=discord.Colour.green(),
                         ).set_footer(text="This is an automated message. If you have any questions, DM me to open a ticket!")
                     )
             except discord.errors.Forbidden:
@@ -97,7 +97,7 @@ class roleResponse(commands.Cog):
                     embed=discord.Embed(
                         title=f"{member} App for {nameRole} was Accepted",
                         description=f"Accepted by {ctx.author.mention}. An error occured in sending confirmation.",
-                        color=discord.colour.gold(),
+                        color=discord.Colour.gold(),
                     ),
                 )
                 return await ctx.send('Role has been applied. User has not been notified as they do not have DM\'s open.')
@@ -107,7 +107,7 @@ class roleResponse(commands.Cog):
                 embed=discord.Embed(
                     title=f"{member} App for {nameRole} was Accepted",
                     description=f"Accepted by {ctx.author.mention}",
-                    color=discord.colour.green(),
+                    color=discord.Colour.green(),
                 ),
             )
 
@@ -155,7 +155,7 @@ class roleResponse(commands.Cog):
                             + (f" due to: {reason}\n\n" if reason else ".\n\n"),
                             "If you have any questions or believe this is a mistake, DM me to open a ticket!"
                         ),
-                        color=discord.colour.red(),
+                        color=discord.Colour.red(),
                     ).set_footer(text="This is an automated message.")
                 )
 
@@ -168,7 +168,7 @@ class roleResponse(commands.Cog):
                 title=f"{member} App for {nameRole} was Declined",
                 description=f"{member} was declined by {ctx.author.mention}"
                 + (f" for: {reason}" if reason else "."),
-                color=discord.colour.red(),
+                color=discord.Colour.red(),
             ),
         )
 
