@@ -97,7 +97,7 @@ class roleResponse(commands.Cog):
                     guild=ctx.guild,
                     embed=discord.Embed(
                         title=f"{member} ({member.id})",
-                        description=f"{member.mention}'s application for `{nameRole}` was accepted by {ctx.author.mention}. \n An error occured in sending confirmation to user.",
+                        description=f"{member.mention}'s application for `{role.mention}` was accepted by {ctx.author.mention}. \n An error occured in sending confirmation to user.",
                         color=discord.Colour.gold(),
                     ),
                 )
@@ -146,6 +146,9 @@ class roleResponse(commands.Cog):
             else:
                 return await ctx.send('An Error occured: \'Role name not valid\' ')
 
+
+            role = get(ctx.guild.roles, name=nameRole)
+
             # Reply Code ==========================================================
             try:
 
@@ -165,7 +168,7 @@ class roleResponse(commands.Cog):
                     guild=ctx.guild,
                     embed=discord.Embed(
                         title=f"{member} ({member.id})",
-                        description=f"{member.mention}'s application for `{nameRole}` was declined by {ctx.author.mention}"
+                        description=f"{member.mention}'s application for `{role.mention}` was declined by {ctx.author.mention}"
                         + (f" for: \n```{reason}```" if reason else ".")
                         + "\nAn error occured in sending confirmation to user.",
                         color=discord.Colour.dark_gold(),
@@ -173,15 +176,15 @@ class roleResponse(commands.Cog):
                 )
                 return await ctx.send('Error: User has not been notified as they do not have DM\'s open.') 
 
-        await self.log(
-            guild=ctx.guild,
-            embed=discord.Embed(
-                title=f"{member} ({member.id})",
-                description=f"{member.mention}'s application for `{nameRole}` was declined by {ctx.author.mention}"
-                + (f" for: \n```{reason}```" if reason else "."),
-                color=discord.Colour.dark_orange(),
-            ),
-        )
+            await self.log(
+                guild=ctx.guild,
+                embed=discord.Embed(
+                    title=f"{member} ({member.id})",
+                    description=f"{member.mention}'s application for `{role.mention}` was declined by {ctx.author.mention}"
+                    + (f" for: \n```{reason}```" if reason else "."),
+                    color=discord.Colour.dark_orange(),
+                ),
+            )
 
 
     @commands.command(usage="<channel>")
