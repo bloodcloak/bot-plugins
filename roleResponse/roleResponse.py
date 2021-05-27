@@ -107,7 +107,7 @@ class roleResponse(commands.Cog):
                 guild=ctx.guild,
                 embed=discord.Embed(
                     title=f"{member} ({member.id})",
-                    description=f"{member.mention}'s application for `{nameRole}` was accepted by {ctx.author.mention}",
+                    description=f"{member.mention}'s application for `{role.mention}` was accepted by {ctx.author.mention}",
                     color=discord.Colour.green(),
                 ),
             )
