@@ -1,10 +1,19 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
+from core import checks
+from core.models import PermissionLevel
 
 class roleResponse(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    async def cog_command_error(self, ctx, error):
+        """Checks errors"""
+        error = getattr(error, "original", error)
+        if isinstance(error, commands.CheckFailure):
+            return await ctx.send("Error: You don't have enough permissions to run this command!")
+        raise error
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
