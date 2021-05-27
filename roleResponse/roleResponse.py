@@ -97,7 +97,7 @@ class roleResponse(commands.Cog):
                     guild=ctx.guild,
                     embed=discord.Embed(
                         title=f"{member} ({member.id})",
-                        description=f"{member.mention}'s application for `{role.mention}` was accepted by {ctx.author.mention}. \n An error occured in sending confirmation to user.",
+                        description=f"{member.mention}'s application for {role.mention} was accepted by {ctx.author.mention}. \n An error occured in sending confirmation to user.",
                         color=discord.Colour.gold(),
                     ),
                 )
@@ -168,7 +168,7 @@ class roleResponse(commands.Cog):
                     guild=ctx.guild,
                     embed=discord.Embed(
                         title=f"{member} ({member.id})",
-                        description=f"{member.mention}'s application for `{role.mention}` was declined by {ctx.author.mention}"
+                        description=f"{member.mention}'s application for {role.mention} was declined by {ctx.author.mention}"
                         + (f" for: \n```{reason}```" if reason else ".")
                         + "\nAn error occured in sending confirmation to user.",
                         color=discord.Colour.dark_gold(),
@@ -180,7 +180,7 @@ class roleResponse(commands.Cog):
                 guild=ctx.guild,
                 embed=discord.Embed(
                     title=f"{member} ({member.id})",
-                    description=f"{member.mention}'s application for `{role.mention}` was declined by {ctx.author.mention}"
+                    description=f"{member.mention}'s application for {role.mention} was declined by {ctx.author.mention}"
                     + (f" for: \n```{reason}```" if reason else "."),
                     color=discord.Colour.dark_orange(),
                 ),
