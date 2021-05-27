@@ -59,8 +59,8 @@ class roleResponse(commands.Cog):
 
             # Role Processing =============================================
             try:
-                role = get(member.server.roles, name=nameRole)
-                await self.bot.add_roles(member, role)
+                role = get(ctx.guild.roles, name=nameRole)
+                await member.add_roles(role)
             except:
                 return await ctx.send('An Error occured when adding role: `Role Not Found` \nPlease contact an Admin.')
 
