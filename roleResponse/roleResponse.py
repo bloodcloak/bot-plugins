@@ -77,7 +77,7 @@ class roleResponse(commands.Cog):
                                 "Make sure to double check the rules in <#842919779357556766> before posting your info! If you have any questions, <#843007803706048543> will be happy to answer."
                             ),
                             color=discord.Colour.green(),
-                        ).set_footer(text="This is an automated message. If you have any questions, DM me to open a ticket!")
+                        ).set_footer(text="This is an automated message. If you want to contact staff, DM me to open a ticket!")
                     )
                 else:
                     await member.send(
@@ -89,7 +89,7 @@ class roleResponse(commands.Cog):
                                 "- The Trusted Seller role\n"
                             ),
                             color=discord.Colour.green(),
-                        ).set_footer(text="This is an automated message. If you have any questions, DM me to open a ticket!")
+                        ).set_footer(text="This is an automated message. If you want to contact staff, DM me to open a ticket!")
                     )
             except discord.errors.Forbidden:
                 await self.log(
