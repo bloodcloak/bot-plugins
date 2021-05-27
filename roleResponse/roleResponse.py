@@ -152,8 +152,8 @@ class roleResponse(commands.Cog):
                     embed=discord.Embed(
                         description=(
                             f"Unfortunately, your application for {nameRole} in the Beat Saber Commissions Center has been declined" 
-                            + (f" due to: {reason}\n\n" if reason else ".\n\n"),
-                            "If you have any questions or believe this is a mistake, DM me to open a ticket!"
+                            + (f" due to: {reason}\n\n" if reason else ".\n\n")
+                            + "If you have any questions or believe this is a mistake, DM me to open a ticket!"
                         ),
                         color=discord.Colour.red(),
                     ).set_footer(text="This is an automated message.")
