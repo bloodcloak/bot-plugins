@@ -24,7 +24,7 @@ class roleResponse(commands.Cog):
         valid_roles = ('map', 'pcmod', 'questmod', 'pcasset', 'questasset', 'trusted')
 
         if rolename not in valid_roles:
-            await ctx.send('Invalid Args. Usage: `?giverole <member> <rolename>` \nValid Rolenames: ' + ', '.join(valid_roles))
+            await ctx.send('Invalid Args. Usage: `?giverole <member> <rolename>` \nValid Role Names: ' + ', '.join(valid_roles))
         else:
             if member == None:
                 await ctx.send('Error: No user defined')
@@ -70,7 +70,7 @@ class roleResponse(commands.Cog):
                     await member.send(
                         embed=discord.Embed(
                             description=(
-                                f"Congratulations, your application for {nameRole} in the Beat Saber Commissions Center has been accepted!\n\n"
+                                f"Congratulations, your application for the {nameRole} role in the Beat Saber Commissions Center has been accepted!\n\n"
                                 "You've been given the following permissions:\n"
                                 "- The ability to let people commission you through the Beat Saber Commissions Center\n"
                                 "- Access to <#843007803706048543> and <#843551411571785778>\n"
@@ -84,10 +84,9 @@ class roleResponse(commands.Cog):
                     await member.send(
                         embed=discord.Embed(
                             description=(
-                                f"Congratulations, your application for {nameRole} in the Beat Saber Commissions Center has been accepted!\n\n"
+                                f"Congratulations, your application for the {nameRole} role in the Beat Saber Commissions Center has been accepted!\n\n"
                                 "You've been given the following permissions:\n"
                                 f"- Access to {infoChannel}\n"
-                                "- The Trusted Seller role\n"
                             ),
                             color=discord.Colour.green(),
                         ).set_footer(text="This is an automated message. If you want to contact staff, DM me to open a ticket!")
@@ -118,7 +117,7 @@ class roleResponse(commands.Cog):
         valid_roles = ('map', 'pcmod', 'questmod', 'pcasset', 'questasset', 'trusted')
 
         if rolename not in valid_roles:
-            await ctx.send('Invalid Args. Usage: `?denyrole <member> <rolename> [reason]` \nValid Rolenames: ' + ', '.join(valid_roles))
+            await ctx.send('Invalid Args. Usage: `?denyrole <member> <rolename> [reason]` \nValid Role Names: ' + ', '.join(valid_roles))
         else:
             if member == None:
                 await ctx.send('Error: No user defined')
