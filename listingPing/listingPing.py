@@ -11,7 +11,6 @@ logger = logging.getLogger()
 class listingPing(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        bot.wait_until_ready()
         self.pingChannel = bot.get_channel(int('847687831823974440'))
         self.guild = bot.get_guild(int('842915739111653376'))
         self.db = bot.api.get_plugin_partition(self)
@@ -72,6 +71,7 @@ class listingPing(commands.Cog):
     @handleQueue.before_loop
     async def _setDB(self):
         logger.warning("Setup DB")
+        await self.bot.wait_until_ready()
         msgQueue = await self.db.find_one({"_id": "msgQueue"})
 
         if msgQueue is None:
