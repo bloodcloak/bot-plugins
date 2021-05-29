@@ -191,7 +191,7 @@ class listingPing(commands.Cog):
             else:
                 if validMsg:
                     # Check if the message already had a ping
-                    storeKey = f"{after.user.id}-{after.channel.id}_{after.id}"
+                    storeKey = f"{after.author.id}-{after.channel.id}_{after.id}"
                     if storeKey in self.pingdMsgs: return # Already did the ping
                     
                     # Register message for time delay queue
