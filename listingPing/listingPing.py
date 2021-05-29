@@ -20,6 +20,14 @@ class listingPing(commands.Cog):
 
         self.monitorChannels = ('842969358355529728', '842933135654387732', '846142270881005668', '842933105996070953', '842933116213002272', '842933126296895519', '842933147209170975', '842933075826704394', '842933044494336011', '842933058221899787', '842933067500617728', '842933083707932703')
 
+    async def cog_command_error(self, ctx, error):
+        """Checks errors"""
+        error = getattr(error, "original", error)
+        if isinstance(error, commands.CheckFailure):
+            await ctx.message.delete()
+            return await ctx.send("Error: You don't have permission to run this command!", delete_after=5)
+        raise error
+
     async def _updateDB(self):
         await self.db.find_one_and_update(
             {"_id": "msgQueue"}, {"$set": {"msgQueue": self.msgQueue}}, upsert=True
@@ -60,10 +68,10 @@ class listingPing(commands.Cog):
             role = get(self.guild.roles, name=pingRole)
             user = await self.bot.fetch_user(int(obj["usrID"]))
             channel = self.bot.get_channel(int(obj["chanID"]))
-            await self.pingChannel.send(f"{role.mention} \n{user} posted a listing in {channel.mention}!\nLink: https://discord.com/channels/842915739111653376/{channel.id}/{msgID}")
+            await self.pingChannel.send(f"{role.mention} {user} posted a listing in {channel.mention}!\nLink: https://discord.com/channels/842915739111653376/{channel.id}/{msgID}")
 
             # Pop the entry out
-            res = self.msgQueue.pop(str(msgID), None)
+            res = self.msgQueue.pop(str(obj["msgID"]), None)
             await self._updateDB()
             logger.warning("Ping Occured for:", msgID, "\nUser: ", user, "\nResult: \n", res)
         logger.warning("Check Complete")
@@ -122,14 +130,21 @@ class listingPing(commands.Cog):
             await self._updateDB()
             logger.warning("Message Deleted: \n", ctx.id, "\nResult: \n", res)
         
-    async def cog_command_error(self, ctx, error):
-        """Checks errors"""
-        error = getattr(error, "original", error)
-        if isinstance(error, commands.CheckFailure):
-            await ctx.message.delete()
-            return await ctx.send("Error: You don't have permission to run this command!", delete_after=5)
-        raise error
-        
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def resetCheck(self):
+        self.handleQueue.cancel()
+        self.handleQueue.start()
+    
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def stopCheck(self):
+        self.handleQueue.cancel()
+
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def startCheck(self):
+        self.handleQueue.start()
 
 def setup(bot):
     bot.add_cog(listingPing(bot))
