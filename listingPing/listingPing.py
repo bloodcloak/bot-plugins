@@ -177,7 +177,7 @@ class listingPing(commands.Cog):
                 if lowCase.find(keyword) == -1:
                     validMsg = False
 
-            if self.msgQueue.has_key(str(after.id)):
+            if str(after.id) in self.msgQueue:
                 if validMsg:
                     # Note valid edit
                     logger.warning(f"Valid Message Passed Edit Check: {after.id}")
@@ -192,7 +192,7 @@ class listingPing(commands.Cog):
                 if validMsg:
                     # Check if the message already had a ping
                     storeKey = f"{after.user.id}-{after.channel.id}_{after.id}"
-                    if self.pingdMsgs.has_key(storeKey): return # Already did the ping
+                    if storeKey in self.pingdMsgs: return # Already did the ping
                     
                     # Register message for time delay queue
                     rmTimeCal = datetime.now() + self.timeDelta
