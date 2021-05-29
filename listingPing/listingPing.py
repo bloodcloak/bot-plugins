@@ -63,7 +63,7 @@ class listingPing(commands.Cog):
             await self.pingChannel.send(f"{role.mention} \n{user} posted a listing in {channel.mention}!\nLink: https://discord.com/channels/842915739111653376/{channel.id}/{msgID}")
 
             # Pop the entry out
-            res = await self.msgQueue.pop(str(msgID), None)
+            res = self.msgQueue.pop(str(msgID), None)
             await self._updateDB()
             logger.warning("Ping Occured for:", msgID, "\nUser: ", user, "\nResult: \n", res)
         logger.warning("Check Complete")
@@ -118,7 +118,7 @@ class listingPing(commands.Cog):
         
         if str(ctx.channel.id) in self.monitorChannels:
             # Remove from the queue if exists
-            res = await self.msgQueue.pop(str(ctx.id), None)
+            res = self.msgQueue.pop(str(ctx.id), None)
             await self._updateDB()
             logger.warning("Message Deleted: \n", ctx.id, "\nResult: \n", res)
         
