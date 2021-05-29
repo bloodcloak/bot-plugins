@@ -11,8 +11,8 @@ logger = logging.getLogger("Modmail")
 class listingPing(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.pingChannel = self.bot.get_channel(int('847687831823974440'))
-        self.guild = self.bot.get_guild(int('842915739111653376'))
+        self.pingChannel = None
+        self.guild = None
         self.db = bot.api.get_plugin_partition(self)
         self.timeDelta = timedelta(minutes=1)
         self.msgQueue = dict()
@@ -65,6 +65,8 @@ class listingPing(commands.Cog):
     @handleQueue.before_loop
     async def _setDB(self):
         await self.bot.wait_until_ready()
+        self.pingChannel = self.bot.get_channel(int('847687831823974440'))
+        self.guild = self.bot.get_guild(int('842915739111653376'))
         msgQueue = await self.db.find_one({"_id": "msgQueue"})
 
         if msgQueue is None:
