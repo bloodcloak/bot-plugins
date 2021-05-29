@@ -40,7 +40,7 @@ class listingPing(commands.Cog):
             pingRole = None
 
             try:
-                chanIdx = self.monitorChannels.index(obj["chanID"])
+                chanIdx = self.monitorChannels.index(str(obj["chanID"]))
             except ValueError:
                 logger.error("ValueError | Invalid Indexing Occured")
                 continue
