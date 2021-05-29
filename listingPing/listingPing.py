@@ -15,12 +15,15 @@ class listingPing(commands.Cog):
         self.pingChannel = bot.get_channel(int('847687831823974440'))
         self.guild = bot.get_guild(int('842915739111653376'))
         self.db = bot.api.get_plugin_partition(self)
-        self.timeDelta = timedelta(minutes=4)
+        self.timeDelta = timedelta(minutes=1) # How long until users get the ping
+
         self.msgQueue = dict()
+        self.pingdMsgs = dict()
         self.handleQueue.start()
 
         self.monitorChannels = ('842969358355529728', '842933135654387732', '846142270881005668', '842933105996070953', '842933116213002272', '842933126296895519', '842933147209170975', '842933075826704394', '842933044494336011', '842933058221899787', '842933067500617728', '842933083707932703')
         self.eColor = (0x28b808, 0xad0dec, 0x1ecfc5, 0xc00995, 0x3498db)
+        self.keywords = ('status:', 'payment:', 'budget:')
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
@@ -31,11 +34,30 @@ class listingPing(commands.Cog):
         raise error
 
     async def _updateDB(self):
-        await self.db.find_one_and_update(
-            {"_id": "msgQueue"}, {"$set": {"msgQueue": self.msgQueue}}, upsert=True
-        )
+        await self.db.find_one_and_update({"_id": "msgQueue"}, {"$set": {"msgQueue": self.msgQueue}}, upsert=True)
+    
+    async def _updatePingDB(self):
+        await self.db.find_one_and_update({"_id": "pingdMsgs"}, {"$set": {"pingdMsgs": self.pingdMsgs}}, upsert=True)
 
-    @tasks.loop(minutes=2)
+    @tasks.loop(minutes=3)
+    async def handlePingd(self):
+        logger.warning("Starting Cleanup")
+        currTime = datetime.now().timestamp()
+        pingdCopy = self.pingdMsgs.copy()
+        
+        for storeKey, obj in pingdCopy.items():
+            if obj["rmTime"] > currTime:
+                # Time not elapsed, skip to next item
+                continue
+            
+            # Pop the entry out
+            res = self.pingdMsgs.pop(storeKey, None)
+            logger.warning(f"Removed Ping Record for: {storeKey}")
+        
+        await self._updatePingDB()
+        logger.warning("Cleanup Complete")
+
+    @tasks.loop(minutes=1)
     async def handleQueue(self):
         logger.info("Starting Check")
         currTime = datetime.now().timestamp()
@@ -80,9 +102,19 @@ class listingPing(commands.Cog):
             embed.description = (f"{user} posted a listing in {channel.mention}!\n[Direct Link to Listing](https://discord.com/channels/842915739111653376/{channel.id}/{msgID})")
             await self.pingChannel.send(f"{role.mention}", embed = embed)
 
-            # Pop the entry out
+            # Pop the entry to ping record
             res = self.msgQueue.pop(str(obj["msgID"]), None)
+
+            rmTimeCal = datetime.now() + timedelta(minutes=2)
+            storeKey = f"{user.id}-{channel.id}_{msgID}"
+            obStore = {}
+            obStore["usrNM"] = str(f"{user}")
+            obStore["pingTime"] = str(datetime.now())
+            obStore["rmTime"] = rmTimeCal.timestamp()
+            self.pingdMsgs[storeKey] = obStore
+
             await self._updateDB()
+            await self._updatePingDB()
             logger.warning(f"Ping Occured for: {msgID} User: {user}")
             await asyncio.sleep(0.1)
 
@@ -93,15 +125,19 @@ class listingPing(commands.Cog):
         logger.warning("Setup DB")
         await self.bot.wait_until_ready()
         msgQueue = await self.db.find_one({"_id": "msgQueue"})
+        pingdMsgs = await self.db.find_one({"_id": "pingdMsgs"})
 
         if msgQueue is None:
-            await self.db.find_one_and_update(
-                {"_id": "msgQueue"}, {"$set": {"msgQueue": dict()}}, upsert=True
-            )
-
+            await self.db.find_one_and_update({"_id": "msgQueue"}, {"$set": {"msgQueue": dict()}}, upsert=True)
             msgQueue = await self.db.find_one({"_id": "msgQueue"})
+
+        if pingdMsgs is None:
+            await self.db.find_one_and_update({"_id": "pingdMsgs"}, {"$set": {"pingdMsgs": dict()}}, upsert=True)
+            pingdMsgs = await self.db.find_one({"_id": "pingdMsgs"})
         
         self.msgQueue = msgQueue.get("msgQueue", dict())
+        self.pingdMsgs = pingdMsgs.get("pingdMsgs", dict())
+        self.handlePingd.start()
         logger.warning("Setup Complete")
 
     @commands.Cog.listener()
@@ -109,29 +145,72 @@ class listingPing(commands.Cog):
         if ctx.author.bot: return
         
         if str(ctx.channel.id) in self.monitorChannels:
-            validMsg = True
-            keywords = ('status:', 'payment:', 'budget:')
             lowCase = ctx.content.lower()
 
-            for keyword in keywords:
+            for keyword in self.keywords:
+                if lowCase.find(keyword) == -1:
+                    logger.warning(f"Message Failed Store: {lowCase}")
+                    return
+
+            # Register message for time delay queue
+            rmTimeCal = datetime.now() + self.timeDelta
+
+            obStore = {}
+            obStore["usrID"] = int(ctx.author.id)
+            obStore["msgID"] = int(ctx.id)
+            obStore["chanID"] = int(ctx.channel.id)
+            obStore["rmTime"] = rmTimeCal.timestamp()
+            self.msgQueue[str(ctx.id)] = obStore
+            await self._updateDB()
+            logger.warning(f"Message Triggered Store: {ctx.channel.id} {ctx.id}")
+            return
+            
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        if before.author.bot: return
+
+        if str(after.channel.id) in self.monitorChannels:
+            lowCase = after.content.lower()
+            validMsg = True
+            
+            for keyword in self.keywords:
                 if lowCase.find(keyword) == -1:
                     validMsg = False
-                    logger.warning(f"Message Failed Store: {lowCase}")
 
-            if validMsg:
-                # Register message for time delay queue
-                rmTimeCal = datetime.now() + self.timeDelta
+            if self.msgQueue.has_key(str(after.id)):
+                if validMsg:
+                    # Note valid edit
+                    logger.warning(f"Valid Message Passed Edit Check: {after.id}")
+                    return
+                else:
+                    # Remove from the queue if exists
+                    res = self.msgQueue.pop(str(after.id), None)
+                    await self._updateDB()
+                    logger.warning(f"Valid Message Failed Edit Check: {after.id} \nResult: {res}")
+                    return
+            else:
+                if validMsg:
+                    # Check if the message already had a ping
+                    storeKey = f"{after.user.id}-{after.channel.id}_{after.id}"
+                    if self.pingdMsgs.has_key(storeKey): return # Already did the ping
+                    
+                    # Register message for time delay queue
+                    rmTimeCal = datetime.now() + self.timeDelta
 
-                obStore = {}
-                obStore["usrID"] = int(ctx.author.id)
-                obStore["msgID"] = int(ctx.id)
-                obStore["chanID"] = int(ctx.channel.id)
-                obStore["rmTime"] = rmTimeCal.timestamp()
-                self.msgQueue[str(ctx.id)] = obStore
-                await self._updateDB()
-                logger.warning(f"Message Triggered Store: {ctx.channel.id} {ctx.id}")
-                return
-            
+                    obStore = {}
+                    obStore["usrID"] = int(after.author.id)
+                    obStore["msgID"] = int(after.id)
+                    obStore["chanID"] = int(after.channel.id)
+                    obStore["rmTime"] = rmTimeCal.timestamp()
+                    self.msgQueue[str(after.id)] = obStore
+                    await self._updateDB()
+                    logger.warning(f"Failed Message Edit Triggered Store: {after.channel.id} {after.id}")
+                    return
+                else:
+                    logger.warning(f"Failed Message Failed Edit Check: {after.id}")
+                    return
+
+
     @commands.Cog.listener()
     async def on_message_delete(self, ctx):
         if ctx.author.bot: return
@@ -146,26 +225,30 @@ class listingPing(commands.Cog):
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def resetcheck(self,ctx):
         self.handleQueue.cancel()
+        self.handlePingd.cancel()
         self.handleQueue.start()
-        logger.warning("Check Reset")
+        self.handlePingd.start()
+        logger.warning(f"Check Reset by {ctx.user}")
         await ctx.send("Reset!")
     
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def stopcheck(self,ctx):
         self.handleQueue.cancel()
-        logger.warning("Check Stopped")
+        self.handlePingd.cancel()
+        logger.warning(f"Check Stopped by {ctx.user}")
         await ctx.send("Stopped!")
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def startcheck(self,ctx):
         self.handleQueue.start()
-        logger.warning("Check Started")
+        self.handlePingd.start()
+        logger.warning(f"Check Started by {ctx.user}")
         await ctx.send("Started!")
 
 def setup(bot):
     bot.add_cog(listingPing(bot))
 
 def cog_unload(self):
-        self.handleQueue.cancel()
+    self.handleQueue.cancel()
