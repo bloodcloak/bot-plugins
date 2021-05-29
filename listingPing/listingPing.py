@@ -98,7 +98,7 @@ class listingPing(commands.Cog):
 
                 obStore = {}
                 obStore["usrID"] = int(ctx.author.id)
-                obStore["msgID"] = int(ctx.message.id)
+                obStore["msgID"] = int(ctx.id)
                 obStore["chanID"] = int(ctx.channel.id)
                 obStore["rmTime"] = rmTimeCal.timestamp()
                 self.msgQueue[str(ctx.message.id)] = obStore
@@ -112,9 +112,9 @@ class listingPing(commands.Cog):
         
         if str(ctx.channel.id) in self.monitorChannels:
             # Remove from the queue if exists
-            res = self.msgQueue.pop(str(ctx.message.id), None)
+            res = self.msgQueue.pop(str(ctx.id), None)
             await self._updateDB()
-            logger.info("Message Deleted: \n", ctx.message.id, "\nResult: \n", res)
+            logger.info("Message Deleted: \n", ctx.id, "\nResult: \n", res)
         
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
