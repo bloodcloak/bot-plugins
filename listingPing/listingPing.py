@@ -15,7 +15,7 @@ class listingPing(commands.Cog):
         self.pingChannel = bot.get_channel(int('847687831823974440'))
         self.guild = bot.get_guild(int('842915739111653376'))
         self.db = bot.api.get_plugin_partition(self)
-        self.timeDelta = timedelta(minutes=1)
+        self.timeDelta = timedelta(minutes=4)
         self.msgQueue = dict()
         self.handleQueue.start()
 
@@ -34,7 +34,7 @@ class listingPing(commands.Cog):
             {"_id": "msgQueue"}, {"$set": {"msgQueue": self.msgQueue}}, upsert=True
         )
 
-    @tasks.loop(seconds=30) #@tasks.loop(minutes=5)
+    @tasks.loop(minutes=2)
     async def handleQueue(self):
         logger.info("Starting Check")
         currTime = datetime.now().timestamp()
@@ -74,7 +74,7 @@ class listingPing(commands.Cog):
             # Pop the entry out
             res = self.msgQueue.pop(str(obj["msgID"]), None)
             await self._updateDB()
-            logger.warning(f"Ping Occured for: {msgID} \nUser: {user} \nResult: {res}")
+            logger.warning(f"Ping Occured for: {msgID} User: {user}")
             await asyncio.sleep(0.1)
 
         logger.info("Check Complete")
