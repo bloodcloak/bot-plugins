@@ -20,6 +20,7 @@ class listingPing(commands.Cog):
         self.handleQueue.start()
 
         self.monitorChannels = ('842969358355529728', '842933135654387732', '846142270881005668', '842933105996070953', '842933116213002272', '842933126296895519', '842933147209170975', '842933075826704394', '842933044494336011', '842933058221899787', '842933067500617728', '842933083707932703')
+        self.eColor = (0x28b808, 0xad0dec, 0x1ecfc5, 0xc00995, 0x3498db)
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
@@ -48,19 +49,24 @@ class listingPing(commands.Cog):
             
             ## Determine which role to ping
             pingRole = None
-
+            barColor = None
             chanIDstr = str(obj["chanID"])
 
             if chanIDstr in self.monitorChannels[0]:
                 pingRole = "Map Seller"
+                barColor = self.eColor[0]
             elif chanIDstr in self.monitorChannels[1]:
                 pingRole = "PC Mod Seller"
+                barColor = self.eColor[1]
             elif chanIDstr in self.monitorChannels[2:7]:
                 pingRole = "PC Asset Seller"
+                barColor = self.eColor[2]
             elif chanIDstr in self.monitorChannels[7]:
                 pingRole = "Quest Mod Seller"
+                barColor = self.eColor[3]
             elif chanIDstr in self.monitorChannels[8:12]:
                 pingRole = "Quest Asset Seller"
+                barColor = self.eColor[4]
             else:
                 logger.error(f"Invalid Indexing Occured: {chanIDstr}")
                 continue
@@ -69,7 +75,10 @@ class listingPing(commands.Cog):
             role = get(self.guild.roles, name=pingRole)
             user = await self.bot.fetch_user(int(obj["usrID"]))
             channel = self.bot.get_channel(int(obj["chanID"]))
-            await self.pingChannel.send(f"{role.mention} {user} posted a listing in {channel.mention}!\nLink: https://discord.com/channels/842915739111653376/{channel.id}/{msgID}")
+            embed = discord.Embed()
+            embed.color = barColor
+            embed.description = (f"{user} posted a listing in {channel.mention}!\n[Direct Link to Listing](https://discord.com/channels/842915739111653376/{channel.id}/{msgID})")
+            await self.pingChannel.send(f"{role.mention}", embed = embed)
 
             # Pop the entry out
             res = self.msgQueue.pop(str(obj["msgID"]), None)
