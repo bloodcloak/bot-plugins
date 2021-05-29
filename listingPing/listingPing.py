@@ -30,7 +30,9 @@ class listingPing(commands.Cog):
     async def handleQueue(self):
         logger.warning("Starting Check")
         currTime = datetime.now().timestamp()
-        for msgID, obj in self.msgQueue.items():
+        queueCopy = self.msgQueue.copy()
+
+        for msgID, obj in queueCopy.items():
             if obj["rmTime"] > currTime:
                 # Time not elapsed, skip to next item
                 continue
@@ -131,3 +133,6 @@ class listingPing(commands.Cog):
 
 def setup(bot):
     bot.add_cog(listingPing(bot))
+
+def cog_unload(self):
+        self.handleQueue.cancel()
