@@ -6,7 +6,7 @@ from core.models import PermissionLevel
 from datetime import datetime, timedelta
 import logging
 
-logger = logging.getLogger("Modmail")
+logger = logging.getLogger()
 
 class listingPing(commands.Cog):
     def __init__(self, bot):
@@ -26,6 +26,7 @@ class listingPing(commands.Cog):
 
     @tasks.loop(seconds=30) #@tasks.loop(minutes=5)
     async def handleQueue(self):
+        logger.info("Starting Check")
         currTime = datetime.now().timestamp()
         for msgID, obj in self.msgQueue.items():
             if obj["rmTime"] > currTime:
@@ -61,9 +62,11 @@ class listingPing(commands.Cog):
             res = self.msgQueue.pop(str(msgID), None)
             await self._updateDB()
             logger.info("Ping Occured for:", msgID, "\nUser: ", user, "\nResult: \n", res)
+        logger.info("Check Complete")
 
     @handleQueue.before_loop
     async def _setDB(self):
+        logger.info("Setup DB")
         await self.bot.wait_until_ready()
         self.pingChannel = self.bot.get_channel(int('847687831823974440'))
         self.guild = self.bot.get_guild(int('842915739111653376'))
@@ -77,6 +80,7 @@ class listingPing(commands.Cog):
             msgQueue = await self.db.find_one({"_id": "msgQueue"})
         
         self.msgQueue = msgQueue.get("msgQueue", dict())
+        logger.info("Setup Complete")
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
