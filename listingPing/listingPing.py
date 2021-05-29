@@ -57,9 +57,9 @@ class listingPing(commands.Cog):
                 continue
 
             ## Process and Ping
-            role = await get(self.guild.roles, name=pingRole)
+            role = get(self.guild.roles, name=pingRole)
             user = await self.bot.fetch_user(int(obj["usrID"]))
-            channel = await self.bot.get_channel(int(obj["chanID"]))
+            channel = self.bot.get_channel(int(obj["chanID"]))
             await self.pingChannel.send(f"{role.mention} \n{user} posted a listing in {channel.mention}!\nLink: https://discord.com/channels/842915739111653376/{channel.id}/{msgID}")
 
             # Pop the entry out
