@@ -73,7 +73,7 @@ class listingPing(commands.Cog):
             # Pop the entry out
             res = self.msgQueue.pop(str(obj["msgID"]), None)
             await self._updateDB()
-            logger.warning("Ping Occured for:", msgID, "\nUser: ", user, "\nResult: \n", res)
+            logger.warning(f"Ping Occured for: {msgID} \nUser: {user} \nResult: \n {res}")
         logger.warning("Check Complete")
 
     @handleQueue.before_loop
@@ -117,7 +117,7 @@ class listingPing(commands.Cog):
                 obStore["rmTime"] = rmTimeCal.timestamp()
                 self.msgQueue[str(ctx.id)] = obStore
                 await self._updateDB()
-                logger.warning("Message Triggered Store: \n", ctx.channel.id, ctx.id)
+                logger.warning(f"Message Triggered Store: \n{ctx.channel.id} {ctx.id}")
                 return
             
     @commands.Cog.listener()
@@ -128,7 +128,7 @@ class listingPing(commands.Cog):
             # Remove from the queue if exists
             res = self.msgQueue.pop(str(ctx.id), None)
             await self._updateDB()
-            logger.warning("Message Deleted: \n", ctx.id, "\nResult: \n", res)
+            logger.warning(f"Message Deleted: \n {ctx.id} \nResult: \n {res}")
         
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
