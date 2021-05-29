@@ -228,7 +228,7 @@ class listingPing(commands.Cog):
         self.handlePingd.cancel()
         self.handleQueue.start()
         self.handlePingd.start()
-        logger.warning(f"Check Reset by {ctx.user}")
+        logger.warning(f"Check Reset by {ctx.author}")
         await ctx.send("Reset!")
     
     @commands.command()
@@ -236,7 +236,7 @@ class listingPing(commands.Cog):
     async def stopcheck(self,ctx):
         self.handleQueue.cancel()
         self.handlePingd.cancel()
-        logger.warning(f"Check Stopped by {ctx.user}")
+        logger.warning(f"Check Stopped by {ctx.author}")
         await ctx.send("Stopped!")
 
     @commands.command()
@@ -244,7 +244,7 @@ class listingPing(commands.Cog):
     async def startcheck(self,ctx):
         self.handleQueue.start()
         self.handlePingd.start()
-        logger.warning(f"Check Started by {ctx.user}")
+        logger.warning(f"Check Started by {ctx.author}")
         await ctx.send("Started!")
 
 def setup(bot):
