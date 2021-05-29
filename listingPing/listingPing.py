@@ -11,11 +11,13 @@ logger = logging.getLogger()
 class listingPing(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.pingChannel = None
-        self.guild = None
+        bot.wait_until_ready()
+        self.pingChannel = bot.get_channel(int('847687831823974440'))
+        self.guild = bot.get_guild(int('842915739111653376'))
         self.db = bot.api.get_plugin_partition(self)
         self.timeDelta = timedelta(minutes=1)
         self.msgQueue = dict()
+        self.handleQueue.start()
 
         self.monitorChannels = ('842969358355529728', '842933135654387732', '846142270881005668', '842933105996070953', '842933116213002272', '842933126296895519', '842933147209170975', '842933075826704394', '842933044494336011', '842933058221899787', '842933067500617728', '842933083707932703')
 
@@ -67,9 +69,6 @@ class listingPing(commands.Cog):
     @handleQueue.before_loop
     async def _setDB(self):
         logger.info("Setup DB")
-        await self.bot.wait_until_ready()
-        self.pingChannel = self.bot.get_channel(int('847687831823974440'))
-        self.guild = self.bot.get_guild(int('842915739111653376'))
         msgQueue = await self.db.find_one({"_id": "msgQueue"})
 
         if msgQueue is None:
