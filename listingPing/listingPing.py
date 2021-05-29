@@ -132,19 +132,22 @@ class listingPing(commands.Cog):
         
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    async def resetCheck(self):
+    async def resetcheck(self,ctx):
         self.handleQueue.cancel()
         self.handleQueue.start()
+        await ctx.send("Reset!")
     
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    async def stopCheck(self):
+    async def stopcheck(self,ctx):
         self.handleQueue.cancel()
+        await ctx.send("Stopped!")
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    async def startCheck(self):
+    async def startcheck(self,ctx):
         self.handleQueue.start()
+        await ctx.send("Started!")
 
 def setup(bot):
     bot.add_cog(listingPing(bot))
