@@ -15,7 +15,7 @@ class listingPing(commands.Cog):
         self.pingChannel = bot.get_channel(int('847687831823974440'))
         self.guild = bot.get_guild(int('842915739111653376'))
         self.db = bot.api.get_plugin_partition(self)
-        self.timeDelta = timedelta(minutes=1) # How long until users get the ping
+        self.timeDelta = timedelta(minutes=4) # How long until users get the ping
 
         self.msgQueue = dict()
         self.pingdMsgs = dict()
@@ -39,7 +39,7 @@ class listingPing(commands.Cog):
     async def _updatePingDB(self):
         await self.db.find_one_and_update({"_id": "pingdMsgs"}, {"$set": {"pingdMsgs": self.pingdMsgs}}, upsert=True)
 
-    @tasks.loop(minutes=3)
+    @tasks.loop(hours=24)
     async def handlePingd(self):
         logger.warning("Starting Cleanup")
         currTime = datetime.now().timestamp()
@@ -57,7 +57,7 @@ class listingPing(commands.Cog):
         await self._updatePingDB()
         logger.warning("Cleanup Complete")
 
-    @tasks.loop(minutes=1)
+    @tasks.loop(minutes=2)
     async def handleQueue(self):
         logger.info("Starting Check")
         currTime = datetime.now().timestamp()
@@ -105,7 +105,7 @@ class listingPing(commands.Cog):
             # Pop the entry to ping record
             res = self.msgQueue.pop(str(obj["msgID"]), None)
 
-            rmTimeCal = datetime.now() + timedelta(minutes=2)
+            rmTimeCal = datetime.now() + timedelta(days=30)
             storeKey = f"{user.id}-{channel.id}_{msgID}"
             obStore = {}
             obStore["usrNM"] = str(f"{user}")
