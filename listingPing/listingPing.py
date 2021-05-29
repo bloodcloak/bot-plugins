@@ -56,12 +56,12 @@ class listingPing(commands.Cog):
                 pingRole = "PC Mod Seller"
             elif chanIDstr in self.monitorChannels[2:7]:
                 pingRole = "PC Asset Seller"
-            elif chanIDstr in self.monitorChannels[8]:
+            elif chanIDstr in self.monitorChannels[7]:
                 pingRole = "Quest Mod Seller"
-            elif chanIDstr in self.monitorChannels[9:12]:
+            elif chanIDstr in self.monitorChannels[8:12]:
                 pingRole = "Quest Asset Seller"
             else:
-                logger.error("Invalid Indexing Occured")
+                logger.error(f"Invalid Indexing Occured: {chanIDstr}")
                 continue
 
             ## Process and Ping
@@ -73,7 +73,7 @@ class listingPing(commands.Cog):
             # Pop the entry out
             res = self.msgQueue.pop(str(obj["msgID"]), None)
             await self._updateDB()
-            logger.warning(f"Ping Occured for: {msgID} \nUser: {user} \nResult: \n {res}")
+            logger.warning(f"Ping Occured for: {msgID} \nUser: {user} \nResult: {res}")
         logger.warning("Check Complete")
 
     @handleQueue.before_loop
@@ -117,7 +117,7 @@ class listingPing(commands.Cog):
                 obStore["rmTime"] = rmTimeCal.timestamp()
                 self.msgQueue[str(ctx.id)] = obStore
                 await self._updateDB()
-                logger.warning(f"Message Triggered Store: \n{ctx.channel.id} {ctx.id}")
+                logger.warning(f"Message Triggered Store: {ctx.channel.id} {ctx.id}")
                 return
             
     @commands.Cog.listener()
@@ -128,7 +128,7 @@ class listingPing(commands.Cog):
             # Remove from the queue if exists
             res = self.msgQueue.pop(str(ctx.id), None)
             await self._updateDB()
-            logger.warning(f"Message Deleted: \n {ctx.id} \nResult: \n {res}")
+            logger.warning(f"Message Deleted: {ctx.id} \nResult: {res}")
         
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
