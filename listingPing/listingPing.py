@@ -38,7 +38,12 @@ class listingPing(commands.Cog):
             
             ## Determine which role to ping
             pingRole = None
-            chanIdx = self.monitorChannels.index(obj["chanID"])
+
+            try:
+                chanIdx = self.monitorChannels.index(obj["chanID"])
+            except ValueError:
+                logger.error("ValueError | Invalid Indexing Occured")
+                continue
 
             if chanIdx == 0:
                 pingRole = "Map Seller"
