@@ -1,3 +1,4 @@
+import asyncio
 import discord
 from discord.ext import commands, tasks
 from discord.utils import get
@@ -35,7 +36,7 @@ class listingPing(commands.Cog):
 
     @tasks.loop(seconds=30) #@tasks.loop(minutes=5)
     async def handleQueue(self):
-        logger.warning("Starting Check")
+        logger.info("Starting Check")
         currTime = datetime.now().timestamp()
         queueCopy = self.msgQueue.copy()
 
@@ -74,7 +75,9 @@ class listingPing(commands.Cog):
             res = self.msgQueue.pop(str(obj["msgID"]), None)
             await self._updateDB()
             logger.warning(f"Ping Occured for: {msgID} \nUser: {user} \nResult: {res}")
-        logger.warning("Check Complete")
+            await asyncio.sleep(0.1)
+
+        logger.info("Check Complete")
 
     @handleQueue.before_loop
     async def _setDB(self):
@@ -104,7 +107,7 @@ class listingPing(commands.Cog):
             for keyword in keywords:
                 if lowCase.find(keyword) == -1:
                     validMsg = False
-                    logger.warning("Message Failed Store: ", lowCase)
+                    logger.warning(f"Message Failed Store: {lowCase}")
 
             if validMsg:
                 # Register message for time delay queue
@@ -135,18 +138,21 @@ class listingPing(commands.Cog):
     async def resetcheck(self,ctx):
         self.handleQueue.cancel()
         self.handleQueue.start()
+        logger.warning("Check Reset")
         await ctx.send("Reset!")
     
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def stopcheck(self,ctx):
         self.handleQueue.cancel()
+        logger.warning("Check Stopped")
         await ctx.send("Stopped!")
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def startcheck(self,ctx):
         self.handleQueue.start()
+        logger.warning("Check Started")
         await ctx.send("Started!")
 
 def setup(bot):
