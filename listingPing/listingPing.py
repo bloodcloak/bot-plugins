@@ -28,7 +28,7 @@ class listingPing(commands.Cog):
 
     @tasks.loop(seconds=30) #@tasks.loop(minutes=5)
     async def handleQueue(self):
-        logger.info("Starting Check")
+        logger.warning("Starting Check")
         currTime = datetime.now().timestamp()
         for msgID, obj in self.msgQueue.items():
             if obj["rmTime"] > currTime:
@@ -39,21 +39,17 @@ class listingPing(commands.Cog):
             ## Determine which role to ping
             pingRole = None
 
-            try:
-                chanIdx = self.monitorChannels.index(str(obj["chanID"]))
-            except ValueError:
-                logger.error("ValueError | Invalid Indexing Occured")
-                continue
+            chanIDstr = str(obj["chanID"])
 
-            if chanIdx == 0:
+            if chanIDstr in self.monitorChannels[0]:
                 pingRole = "Map Seller"
-            elif chanIdx == 1:
+            elif chanIDstr in self.monitorChannels[1]:
                 pingRole = "PC Mod Seller"
-            elif chanIdx >= 2 and chanIdx <= 6:
+            elif chanIDstr in self.monitorChannels[2:7]:
                 pingRole = "PC Asset Seller"
-            elif chanIdx == 7:
+            elif chanIDstr in self.monitorChannels[8]:
                 pingRole = "Quest Mod Seller"
-            elif chanIdx >= 8 and chanIdx <= 11:
+            elif chanIDstr in self.monitorChannels[9:12]:
                 pingRole = "Quest Asset Seller"
             else:
                 logger.error("Invalid Indexing Occured")
@@ -68,12 +64,12 @@ class listingPing(commands.Cog):
             # Pop the entry out
             res = self.msgQueue.pop(str(msgID), None)
             await self._updateDB()
-            logger.info("Ping Occured for:", msgID, "\nUser: ", user, "\nResult: \n", res)
-        logger.info("Check Complete")
+            logger.warning("Ping Occured for:", msgID, "\nUser: ", user, "\nResult: \n", res)
+        logger.warning("Check Complete")
 
     @handleQueue.before_loop
     async def _setDB(self):
-        logger.info("Setup DB")
+        logger.warning("Setup DB")
         msgQueue = await self.db.find_one({"_id": "msgQueue"})
 
         if msgQueue is None:
@@ -84,7 +80,7 @@ class listingPing(commands.Cog):
             msgQueue = await self.db.find_one({"_id": "msgQueue"})
         
         self.msgQueue = msgQueue.get("msgQueue", dict())
-        logger.info("Setup Complete")
+        logger.warning("Setup Complete")
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
@@ -98,7 +94,7 @@ class listingPing(commands.Cog):
             for keyword in keywords:
                 if lowCase.find(keyword) == -1:
                     validMsg = False
-                    logger.info("Message Failed Store: ", lowCase)
+                    logger.warning("Message Failed Store: ", lowCase)
 
             if validMsg:
                 # Register message for time delay queue
@@ -111,7 +107,7 @@ class listingPing(commands.Cog):
                 obStore["rmTime"] = rmTimeCal.timestamp()
                 self.msgQueue[str(ctx.id)] = obStore
                 await self._updateDB()
-                logger.info("Message Triggered Store: \n", obStore)
+                logger.warning("Message Triggered Store: \n", obStore)
                 return
             
     @commands.Cog.listener()
@@ -122,7 +118,7 @@ class listingPing(commands.Cog):
             # Remove from the queue if exists
             res = self.msgQueue.pop(str(ctx.id), None)
             await self._updateDB()
-            logger.info("Message Deleted: \n", ctx.id, "\nResult: \n", res)
+            logger.warning("Message Deleted: \n", ctx.id, "\nResult: \n", res)
         
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
