@@ -124,3 +124,6 @@ class listingPing(commands.Cog):
             return await ctx.send("Error: You don't have permission to run this command!", delete_after=5)
         raise error
         
+
+def setup(bot):
+    bot.add_cog(listingPing(bot))
