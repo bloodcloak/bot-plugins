@@ -117,7 +117,7 @@ class listingPing(commands.Cog):
                 obStore["rmTime"] = rmTimeCal.timestamp()
                 self.msgQueue[str(ctx.id)] = obStore
                 await self._updateDB()
-                logger.warning("Message Triggered Store: \n", obStore)
+                logger.warning("Message Triggered Store: \n", ctx.channel.id, ctx.id)
                 return
             
     @commands.Cog.listener()
