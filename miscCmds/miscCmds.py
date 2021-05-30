@@ -20,6 +20,7 @@ class miscCmds(commands.Cog):
         self.timeDelta = timedelta(seconds=45)
 
         self.welQueue = dict()
+        self.checkQueue.start()
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
@@ -63,3 +64,23 @@ class miscCmds(commands.Cog):
             obStore["rmTime"] = rmTimeCal.timestamp()
             obStore["usrID"] = int(ctx.author.id)
             self.msgQueue[str(ctx.id)] = obStore
+
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def stopwel(self,ctx):
+        self.checkQueue.cancel()
+        logger.warning(f"Welcome Channel Check Stopped by {ctx.author}")
+        await ctx.send("Stopped!")
+
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def startwel(self,ctx):
+        self.checkQueue.start()
+        logger.warning(f"Welcome Channel Check Started by {ctx.author}")
+        await ctx.send("Started!")
+
+def setup(bot):
+    bot.add_cog(miscCmds(bot))
+
+def cog_unload(self):
+    self.checkQueue.cancel()
