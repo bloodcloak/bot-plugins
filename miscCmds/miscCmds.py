@@ -1,0 +1,65 @@
+import asyncio
+import discord
+from discord import guild
+from discord.enums import VerificationLevel
+from discord.ext import commands, tasks
+from discord.utils import get
+from core import checks
+from core.models import PermissionLevel
+from datetime import datetime, timedelta
+import logging
+
+logger = logging.getLogger()
+
+class miscCmds(commands.Cog):
+    def __init__(self,bot):
+        self.bot = bot
+        self.guild = bot.get_guild(int('842915739111653376'))
+        self.welcomeChan = str('842915739111653379')
+        self.pingChannel = bot.get_channel(self.welcomeChan)
+        self.timeDelta = timedelta(seconds=45)
+
+        self.welQueue = dict()
+
+    async def cog_command_error(self, ctx, error):
+        """Checks errors"""
+        error = getattr(error, "original", error)
+        if isinstance(error, commands.CheckFailure):
+            await ctx.message.delete()
+            return await ctx.send("Error: You don't have permission to run this command!", delete_after=5)
+        raise error
+
+    '''
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def raidPanic(self, ctx):
+        await self.bot.edit(VerificationLevel)
+    '''
+
+    @tasks.loop(minutes=1)
+    async def checkQueue(self):
+        currTime = datetime.now().timestamp()
+        welCopy = self.welQueue.copy()
+
+        if len(welCopy) >= 5:
+            await self.pingChannel.send("<@842916395519574037> Unusual Join Activity Detected")
+
+        for storeKey, obj in welCopy.items():
+            if obj["rmTime"] > currTime:
+                # Time not elapsed, skip to next item
+                continue
+
+            # Pop Entry from database
+            res = self.welQueue.pop(storeKey, None)
+            await asyncio.sleep(0.1)
+
+    @commands.Cog.listener()
+    async def on_message(self, ctx):
+        if ctx.author.bot: return
+        if str(ctx.channel.id) == self.welcomeChan:
+            # add to queue
+            rmTimeCal = datetime.now() + self.timeDelta
+            obStore = {}
+            obStore["rmTime"] = rmTimeCal.timestamp()
+            obStore["usrID"] = int(ctx.author.id)
+            self.msgQueue[str(ctx.id)] = obStore
