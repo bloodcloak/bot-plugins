@@ -16,7 +16,7 @@ class miscCmds(commands.Cog):
         self.bot = bot
         self.guild = bot.get_guild(int('842915739111653376'))
         self.welcomeChan = str('842915739111653379')
-        self.pingChannel = bot.get_channel(self.welcomeChan)
+        self.pingChannel = bot.get_channel(int(self.welcomeChan))
         self.timeDelta = timedelta(seconds=45)
 
         self.welQueue = dict()
