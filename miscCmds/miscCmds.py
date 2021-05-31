@@ -62,7 +62,7 @@ class miscCmds(commands.Cog):
         obStore = {}
         obStore["rmTime"] = rmTimeCal.timestamp()
         obStore["usrNM"] = str(member)
-        self.msgQueue[str(member.id)] = obStore
+        self.welQueue[str(member.id)] = obStore
         logger.warning(f"New member joined {str(member)}")
 
     @commands.command()
