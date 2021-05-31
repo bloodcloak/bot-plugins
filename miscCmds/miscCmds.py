@@ -16,7 +16,7 @@ class miscCmds(commands.Cog):
         self.bot = bot
         self.guild = bot.get_guild(int('842915739111653376'))
         self.welcomeChan = str('842915739111653379')
-        self.pingChannel = bot.get_channel(int(self.welcomeChan))
+        self.pingChannel = bot.get_channel(int('842940696485822475'))
         self.timeDelta = timedelta(seconds=45)
 
         self.welQueue = dict()
@@ -44,6 +44,7 @@ class miscCmds(commands.Cog):
 
         if len(welCopy) >= 5:
             await self.pingChannel.send("<@842916395519574037> Unusual Join Activity Detected")
+            logger.warning(f"+++++ Unusual Join Activity Detected +++++++")
 
         for storeKey, obj in welCopy.items():
             if obj["rmTime"] > currTime:
