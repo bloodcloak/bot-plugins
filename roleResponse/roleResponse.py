@@ -155,7 +155,7 @@ class roleResponse(commands.Cog):
                     embed=discord.Embed(
                         description=(
                             f"Unfortunately, your application for {nameRole} in the Beat Saber Commissions Center has been declined" 
-                            + (f" because: \n```{reason}```" if reason else ".\n")
+                            + (f" because: \n```{reason}```" if reason else ".\n\n")
                             + "If you have any questions or believe this is a mistake, DM me to open a ticket!"
                         ),
                         color=discord.Colour.dark_orange(),
