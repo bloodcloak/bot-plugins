@@ -56,15 +56,14 @@ class miscCmds(commands.Cog):
             await asyncio.sleep(0.1)
 
     @commands.Cog.listener()
-    async def on_message(self, ctx):
-        if ctx.author.bot: return
-        if str(ctx.channel.id) == self.welcomeChan:
-            # add to queue
-            rmTimeCal = datetime.now() + self.timeDelta
-            obStore = {}
-            obStore["rmTime"] = rmTimeCal.timestamp()
-            obStore["usrID"] = int(ctx.author.id)
-            self.msgQueue[str(ctx.id)] = obStore
+    async def on_member_join(self, member):
+        # add to queue
+        rmTimeCal = datetime.now() + self.timeDelta
+        obStore = {}
+        obStore["rmTime"] = rmTimeCal.timestamp()
+        obStore["usrNM"] = str(member)
+        self.msgQueue[str(member.id)] = obStore
+        logger.warning(f"New member joined {obStore["usrNM"]}")
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
