@@ -54,7 +54,7 @@ class miscCmds(commands.Cog):
             if self.pingCooldown:
                 logger.warning(f"+++++ | Ping In Cooldown | +++++++")
             else:
-                await self.pingChannel.send("<@842916395519574037> Unusual Join Activity Detected")
+                await self.pingChannel.send("<@&842916395519574037> Unusual Join Activity Detected")
                 self.pingCooldown = True
                 self.rmCooldown = datetime.now() + timedelta(minutes=5)
                 logger.warning(f"+++++ | Ping Sent | +++++++")
