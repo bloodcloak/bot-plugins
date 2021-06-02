@@ -41,16 +41,17 @@ class miscCmds(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def checkQueue(self):
-        currTime = datetime.now().timestamp()
+        loggingTime = datetime.now()
+        currTime = loggingTime.timestamp()
         welCopy = self.welQueue.copy()
 
         if self.pingCooldown:
             if self.rmCooldown.timestamp() < currTime:
                 self.pingCooldown = False
-                logger.warning(f"+++++ Ping Cooldown Reset!")
+                logger.warning(f"{loggingTime} +++++ Ping Cooldown Reset!")
 
         if len(welCopy) >= 5:
-            logger.warning(f"+++++ Unusual Join Activity Detected +++++++")
+            logger.warning(f"{loggingTime} +++++ Unusual Join Activity Detected +++++++")
             if self.pingCooldown:
                 logger.warning(f"+++++ | Ping In Cooldown | +++++++")
             else:
@@ -89,8 +90,22 @@ class miscCmds(commands.Cog):
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def startwel(self,ctx):
-        self.checkQueue.start()
         logger.warning(f"Welcome Channel Check Started by {ctx.author}")
+        
+        # Cleanup old queue
+        currTime = datetime.now().timestamp()
+        welCopy = self.welQueue.copy()
+
+        for storeKey, obj in welCopy.items():
+            if obj["rmTime"] > currTime:
+                # Time not elapsed, skip to next item
+                continue
+
+            # Pop Entry from database
+            res = self.welQueue.pop(storeKey, None)
+            await asyncio.sleep(0.1)
+
+        self.checkQueue.start()
         await ctx.send("Started!")
 
 def setup(bot):
