@@ -55,6 +55,8 @@ class utils(commands.Cog):
             userValid = False
             sellRoles = ("844023616592674866", "844023797996453908", "844023922722078720", "844023941553979402","844023967190614036")
             for y in member.roles:
+                if y == self.guild.roles.everyone.id:
+                    continue
                 if y.id in sellRoles:
                     userValid = True
                 hasRoles = hasRoles + f"<@&{y.id}> "
