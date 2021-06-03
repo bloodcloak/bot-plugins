@@ -53,9 +53,11 @@ class utils(commands.Cog):
         else:
             hasRoles = ""
             userValid = False
+            every1 = True
             sellRoles = ("844023616592674866", "844023797996453908", "844023922722078720", "844023941553979402","844023967190614036")
             for y in member.roles:
-                if y == "@everyone":
+                if every1:
+                    every1 = False
                     continue
                 if y.id in sellRoles:
                     userValid = True
