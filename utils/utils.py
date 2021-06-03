@@ -35,11 +35,11 @@ class utils(commands.Cog):
             await message.send('Invalid Args. Usage: `?verifylvl <action> Valid Actions:\n`panik`: Phone Required\n`kalm`: regular settings')
         else:
             if action == 'panik':
-                self.guild.edit(verification_level = discord.VerificationLevel.extreme)
+                await self.guild.edit(verification_level = discord.VerificationLevel.extreme)
                 await self.logChannel.send(f'{message.author} ({message.author.id}) set server level to EXTREME. (Verified Phone Required)')
                 logger.warning(f"{datetime.now()} WARN | {message.author} ({message.author.id}) Flipped the table in Panik. (Verified Phone Required)")
             else:
-                self.guild.edit(verification_level = discord.VerificationLevel.high)
+                await self.guild.edit(verification_level = discord.VerificationLevel.high)
                 await self.logChannel.send(f'{message.author} ({message.author.id}) set server level to kalm. (10 min in server and email required)')
                 logger.warning(f"{datetime.now()} WARN | {message.author} ({message.author.id}) Set the table to kalm. (10 min in server and email required)")
 
