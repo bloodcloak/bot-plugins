@@ -29,10 +29,10 @@ class utils(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    async def srvFlip(self, message, action):
+    async def srvflip(self, message, action):
         validActions = ('panik', 'kalm')
         if action not in validActions:
-            await message.send('Invalid Args. Usage: `?servFlip <action> Valid Actions:\n`panik`: Phone Required\n`kalm`: regular settings')
+            await message.send('Invalid Args. Usage: `?srvFlip <action> Valid Actions:\n`panik`: Phone Required\n`kalm`: regular settings')
         else:
             if action == 'panik':
                 self.guild.verification_level = discord.VerificationLevel.extreme
@@ -44,7 +44,7 @@ class utils(commands.Cog):
                 logger.warning(f"{datetime.now()} WARN | {message.author} ({message.author.id}) Set the table to kalm. (10 min in server and email required)")
 
     @commands.command()
-    async def roleCheck(self, ctx, member: discord.Member = None):
+    async def rolecheck(self, ctx, member: discord.Member = None):
         """Check a server members roles to see if they are allowed to sell on the server.\nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`"""
         
         if member == None:
