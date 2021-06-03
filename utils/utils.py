@@ -17,7 +17,6 @@ class utils(commands.Cog):
         self.bot = bot
         self.guild = bot.get_guild(int('842915739111653376'))
         self.logChannel = bot.get_channel(int('842940696485822475'))
-        self.everyoneID = get(self.guild.roles, name="@everyone").id
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
@@ -56,11 +55,11 @@ class utils(commands.Cog):
             userValid = False
             sellRoles = ("844023616592674866", "844023797996453908", "844023922722078720", "844023941553979402","844023967190614036")
             for y in member.roles:
-                if y == self.everyoneID:
+                if y == "@everyone":
                     continue
                 if y.id in sellRoles:
                     userValid = True
-                hasRoles = hasRoles + f"<@&{y.id}> "
+                hasRoles = f"<@&{y.id}> " + hasRoles
 
             if userValid:
                 eColor = discord.Color.green()
