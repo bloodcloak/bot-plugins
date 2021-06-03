@@ -1,6 +1,7 @@
 import asyncio
 import discord
 from discord import guild
+from discord import embeds
 from discord.enums import VerificationLevel
 from discord.ext import commands, tasks
 from discord.utils import get
@@ -75,6 +76,8 @@ class utils(commands.Cog):
             )
             embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
             embed.add_field(name="Roles", value=hasRoles)
+
+            await ctx.send(embed = embed)
 
 def setup(bot):
     bot.add_cog(utils(bot))
