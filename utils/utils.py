@@ -17,6 +17,7 @@ class utils(commands.Cog):
         self.bot = bot
         self.guild = bot.get_guild(int('842915739111653376'))
         self.logChannel = bot.get_channel(int('842940696485822475'))
+        self.everyoneID = get(self.guild.roles, name="everyone").id
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
@@ -55,7 +56,7 @@ class utils(commands.Cog):
             userValid = False
             sellRoles = ("844023616592674866", "844023797996453908", "844023922722078720", "844023941553979402","844023967190614036")
             for y in member.roles:
-                if y == self.guild.roles.everyone.id:
+                if y == self.everyoneID:
                     continue
                 if y.id in sellRoles:
                     userValid = True
@@ -72,8 +73,7 @@ class utils(commands.Cog):
                 trustLevel = "**NOT** sell"
 
             embed = discord.Embed(
-                title= ("Seller Check"),
-                description = (f"<@!{member.id}> can {trustLevel} in the server."),
+                description = (f"Seller Check: <@!{member.id}> can {trustLevel} in the server."),
                 color = eColor
             )
             embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
