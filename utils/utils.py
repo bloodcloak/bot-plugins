@@ -59,7 +59,7 @@ class utils(commands.Cog):
                 if every1:
                     every1 = False
                     continue
-                if y.id in sellRoles:
+                if str(y.id) in sellRoles:
                     userValid = True
                 hasRoles = f"<@&{y.id}> " + hasRoles
 
