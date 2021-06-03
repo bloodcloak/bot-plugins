@@ -29,18 +29,18 @@ class utils(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    async def srvflip(self, message, action):
+    async def verifylvl(self, message, action):
         validActions = ('panik', 'kalm')
         if action not in validActions:
-            await message.send('Invalid Args. Usage: `?srvFlip <action> Valid Actions:\n`panik`: Phone Required\n`kalm`: regular settings')
+            await message.send('Invalid Args. Usage: `?verifylvl <action> Valid Actions:\n`panik`: Phone Required\n`kalm`: regular settings')
         else:
             if action == 'panik':
-                self.guild.verification_level = discord.VerificationLevel.extreme
-                await self.logChannel.send(f'{message.author} ({message.author.id}) Flipped the table in Panik. (Verified Phone Required)')
+                self.guild.edit(verification_level = discord.VerificationLevel.extreme)
+                await self.logChannel.send(f'{message.author} ({message.author.id}) set server level to EXTREME. (Verified Phone Required)')
                 logger.warning(f"{datetime.now()} WARN | {message.author} ({message.author.id}) Flipped the table in Panik. (Verified Phone Required)")
             else:
-                self.guild.verification_level = discord.VerificationLevel.high
-                await self.logChannel.send(f'{message.author} ({message.author.id}) Set to kalm. (10 min in server and email required)')
+                self.guild.edit(verification_level = discord.VerificationLevel.high)
+                await self.logChannel.send(f'{message.author} ({message.author.id}) set server level to kalm. (10 min in server and email required)')
                 logger.warning(f"{datetime.now()} WARN | {message.author} ({message.author.id}) Set the table to kalm. (10 min in server and email required)")
 
     @commands.command()
