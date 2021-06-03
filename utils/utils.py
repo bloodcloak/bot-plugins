@@ -51,7 +51,7 @@ class utils(commands.Cog):
                 await ctx.send('Error: No user defined. \nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`')
                 await asyncio.sleep(5)
         else:
-            hasRoles = " "
+            hasRoles = ""
             userValid = False
             every1 = True
             sellRoles = ("844023616592674866", "844023797996453908", "844023922722078720", "844023941553979402","844023967190614036")
@@ -72,6 +72,9 @@ class utils(commands.Cog):
             else:
                 eColor = discord.Color.orange()
                 trustLevel = "**NOT** sell"
+
+            if not hasRoles:
+                hasRoles = "None"
 
             embed = discord.Embed(
                 description = (f"Seller Check: <@!{member.id}> can {trustLevel} in the server."),
