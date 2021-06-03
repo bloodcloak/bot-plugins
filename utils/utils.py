@@ -17,7 +17,7 @@ class utils(commands.Cog):
         self.bot = bot
         self.guild = bot.get_guild(int('842915739111653376'))
         self.logChannel = bot.get_channel(int('842940696485822475'))
-        self.everyoneID = get(self.guild.roles, name="everyone").id
+        self.everyoneID = get(self.guild.roles, name="@everyone").id
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
