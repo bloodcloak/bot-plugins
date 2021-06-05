@@ -27,7 +27,7 @@ class utils(commands.Cog):
             return await ctx.send("Error: You don't have permission to run this command!", delete_after=5)
         raise error
 
-    def days(day: Union[str, int]) -> str:
+    def days(self, day: Union[str, int]) -> str:
         """
         Humanize the number of days.
 
