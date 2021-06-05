@@ -122,8 +122,7 @@ class utils(commands.Cog):
             embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
             embed.add_field(name="Account Created", value=self.days(created),inline=True)
             embed.add_field(name="Joined Server", value=self.days(joined),inline=True)
-            embed.add_field(name="Roles", value=hasRoles)
-
+            embed.add_field(name="Roles", value=hasRoles,inline=False)
             await ctx.send(embed = embed)
 
 def setup(bot):
