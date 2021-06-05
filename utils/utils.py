@@ -80,7 +80,7 @@ class utils(commands.Cog):
     async def checkuser(self, ctx, member: discord.Member = None):
         """Check a server members roles to see if they are allowed to sell on the server.\nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`"""
         curTime = datetime.utcnow()
-        eColor = None
+        eColor = discord.Color.orange()
 
         if member == None:
                 await ctx.send('Error: No user defined. \nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`')
