@@ -84,8 +84,9 @@ class utils(commands.Cog):
             eColor = discord.Color.orange()
 
             if member == None:
-                    await ctx.send('Error: No user defined. \nUsage: `?roleCheck <username or ID>` \nExample: `?roleCheck "Mod Mail#4190"` or `?roleCheck 843260310055550986`', delete_after=10)
-                    await asyncio.sleep(5)
+                await ctx.message.delete()
+                await ctx.send('Error: No user defined. \nUsage: `?roleCheck <username or ID>` \nExample: `?roleCheck "Mod Mail#4190"` or `?roleCheck 843260310055550986`', delete_after=10)
+                await asyncio.sleep(5)
             else:
                 created = str((curTime - member.created_at).days)
                 joined = str((curTime - member.joined_at).days)
