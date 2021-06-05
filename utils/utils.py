@@ -78,14 +78,14 @@ class utils(commands.Cog):
 
     @commands.command()
     async def checkuser(self, ctx, member: discord.Member = None):
-        """Check a server members roles to see if they are allowed to sell on the server.\n\nUsage: `?roleCheck <username or ID>` | Example: `?roleCheck "Mod Mail#4190"` or `?roleCheck 843260310055550986`"""
+        """Check a server members roles to see if they are allowed to sell on the server.\n\nUsage: `?roleCheck <username or ID>` \nExample: `?roleCheck "Mod Mail#4190"` or `?roleCheck 843260310055550986`"""
         if str(ctx.channel.id) == '850623919971106866':    
             curTime = datetime.utcnow()
             eColor = discord.Color.orange()
 
             if member == None:
                 await ctx.message.delete()
-                await ctx.send('Error: No user defined. \nUsage: `?roleCheck <username or ID>` \nExample: `?roleCheck "Mod Mail#4190"` or `?roleCheck 843260310055550986`', delete_after=10)
+                await ctx.send('Error: No user defined. \nUsage: `?roleCheck <username or ID>` \nExample: `?roleCheck "Mod Mail#4190"` or `?roleCheck 843260310055550986`', delete_after=15)
                 await asyncio.sleep(5)
             else:
                 created = str((curTime - member.created_at).days)
