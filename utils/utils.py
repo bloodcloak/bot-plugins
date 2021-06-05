@@ -116,10 +116,12 @@ class utils(commands.Cog):
                 hasRoles = "None"
 
             embed = discord.Embed(
-                description = (f"{member.mention}\n`Created:` {self.days(created)} `Joined:` {self.days(joined)}\nThis user {trustLevel} sell commissions in the server."),
+                description = (f"{member.mention} {trustLevel} sell commissions in the server."),
                 color = eColor
             )
             embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
+            embed.add_field(name="Account Created", value=self.days(created),inline=True)
+            embed.add_field(name="Joined Server", value=self.days(joined),inline=True)
             embed.add_field(name="Roles", value=hasRoles)
 
             await ctx.send(embed = embed)
