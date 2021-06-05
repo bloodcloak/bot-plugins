@@ -124,7 +124,11 @@ class utils(commands.Cog):
                 await ctx.send(embed = embed)
         else:
             await ctx.message.delete()
-            return await ctx.send("Error: Use this command in <#850623919971106866> only!", delete_after=5)
+            return await ctx.send(embed = discord.Embed(
+                title="Channel Error",
+                description="Use this command only in <#850623919971106866>!",
+                color=discord.Color.red()
+            ), delete_after=5)
 
 def setup(bot):
     bot.add_cog(utils(bot))
