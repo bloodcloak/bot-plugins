@@ -79,48 +79,52 @@ class utils(commands.Cog):
     @commands.command()
     async def checkuser(self, ctx, member: discord.Member = None):
         """Check a server members roles to see if they are allowed to sell on the server.\nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`"""
-        curTime = datetime.utcnow()
-        eColor = discord.Color.orange()
+        if str(ctx.channel.id) == '850623919971106866':    
+            curTime = datetime.utcnow()
+            eColor = discord.Color.orange()
 
-        if member == None:
-                await ctx.send('Error: No user defined. \nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`')
-                await asyncio.sleep(5)
-        else:
-            created = str((curTime - member.created_at).days)
-            joined = str((curTime - member.joined_at).days)
-
-            hasRoles = ""
-            userValid = False
-            every1 = True
-            sellRoles = ("844023616592674866", "844023797996453908", "844023922722078720", "844023941553979402","844023967190614036")
-            for y in member.roles:
-                if every1:
-                    every1 = False
-                    continue
-                if str(y.id) in sellRoles:
-                    userValid = True
-                hasRoles = f"<@&{y.id}> " + hasRoles
-
-            if userValid:
-                if eColor:
-                    eColor = discord.Color.green()
-                trustLevel = "✅ can"
+            if member == None:
+                    await ctx.send('Error: No user defined. \nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`')
+                    await asyncio.sleep(5)
             else:
-                eColor = discord.Color.orange()
-                trustLevel = "❌ **CANNOT**"
+                created = str((curTime - member.created_at).days)
+                joined = str((curTime - member.joined_at).days)
 
-            if not hasRoles:
-                hasRoles = "None"
+                hasRoles = ""
+                userValid = False
+                every1 = True
+                sellRoles = ("844023616592674866", "844023797996453908", "844023922722078720", "844023941553979402","844023967190614036")
+                for y in member.roles:
+                    if every1:
+                        every1 = False
+                        continue
+                    if str(y.id) in sellRoles:
+                        userValid = True
+                    hasRoles = f"<@&{y.id}> " + hasRoles
 
-            embed = discord.Embed(
-                description = (f"{member.mention} {trustLevel} sell commissions in the server."),
-                color = eColor
-            )
-            embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
-            embed.add_field(name="Account Created", value=self.days(created),inline=True)
-            embed.add_field(name="Joined Server", value=self.days(joined),inline=True)
-            embed.add_field(name="Roles", value=hasRoles,inline=False)
-            await ctx.send(embed = embed)
+                if userValid:
+                    if eColor:
+                        eColor = discord.Color.green()
+                    trustLevel = "✅ can"
+                else:
+                    eColor = discord.Color.orange()
+                    trustLevel = "❌ **CANNOT**"
+
+                if not hasRoles:
+                    hasRoles = "None"
+
+                embed = discord.Embed(
+                    description = (f"{member.mention} {trustLevel} sell commissions in the server."),
+                    color = eColor
+                )
+                embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
+                embed.add_field(name="Account Created", value=self.days(created),inline=True)
+                embed.add_field(name="Joined Server", value=self.days(joined),inline=True)
+                embed.add_field(name="Roles", value=hasRoles,inline=False)
+                await ctx.send(embed = embed)
+        else:
+            await ctx.message.delete()
+            return await ctx.send("Error: Use this command in <#850623919971106866> only!", delete_after=5)
 
 def setup(bot):
     bot.add_cog(utils(bot))
