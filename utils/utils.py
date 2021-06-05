@@ -9,6 +9,7 @@ from core import checks
 from core.models import PermissionLevel
 from datetime import datetime
 import logging
+from typing import Union
 
 logger = logging.getLogger()
 
@@ -26,31 +27,67 @@ class utils(commands.Cog):
             return await ctx.send("Error: You don't have permission to run this command!", delete_after=5)
         raise error
 
+    def days(day: Union[str, int]) -> str:
+        """
+        Humanize the number of days.
+
+        Parameters
+        ----------
+        day: Union[int, str]
+            The number of days passed.
+
+        Returns
+        -------
+        str
+            A formatted string of the number of days passed.
+        """
+        day = int(day)
+        if day == 0:
+            return "**today**"
+        return f"{day} day ago" if day == 1 else f"{day} days ago"
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     async def verifylvl(self, message, action):
-        validActions = ('panik', 'kalm')
+        validActions = ('panik', 'extreme', 'kalm', 'high')
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?verifylvl <action> Valid Actions:\n`panik`: Phone Required\n`kalm`: regular settings')
         else:
-            if action == 'panik':
+            if action == 'panik' or action == 'extreme':
                 await self.guild.edit(verification_level = discord.VerificationLevel.extreme)
-                await self.logChannel.send(f'{message.author} ({message.author.id}) set server level to EXTREME. (Verified Phone Required)')
+                embed = discord.Embed(
+                    title = "Server Verifcation Level Updated",
+                    description = (f"{message.author.mention} set server level to EXTREME. (Verified Phone Required)"),
+                    color = discord.Color.red()
+                )
+                embed.set_author(name=f"{message.author} ({message.author.id})")
+                await self.logChannel.send(embed = embed)
+                #await self.logChannel.send(f'{message.author} ({message.author.id}) set server level to EXTREME. (Verified Phone Required)')
                 logger.warning(f"{datetime.now()} WARN | {message.author} ({message.author.id}) Flipped the table in Panik. (Verified Phone Required)")
             else:
                 await self.guild.edit(verification_level = discord.VerificationLevel.high)
-                await self.logChannel.send(f'{message.author} ({message.author.id}) set server level to kalm. (10 min in server and email required)')
+                embed = discord.Embed(
+                    title = "Server Verifcation Level Updated",
+                    description = (f"{message.author.mention} set server level to High. (10 min in server and email required)"),
+                    color = discord.Color.red()
+                )
+                embed.set_author(name=f"{message.author} ({message.author.id})")
+                await self.logChannel.send(embed = embed)
+                #await self.logChannel.send(f'{message.author} ({message.author.id}) set server level to kalm. (10 min in server and email required)')
                 logger.warning(f"{datetime.now()} WARN | {message.author} ({message.author.id}) Set the table to kalm. (10 min in server and email required)")
 
     @commands.command()
     async def rolecheck(self, ctx, member: discord.Member = None):
         """Check a server members roles to see if they are allowed to sell on the server.\nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`"""
-        
+        curTime = datetime.utcnow()
+
         if member == None:
                 await ctx.send('Error: No user defined. \nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`')
                 await asyncio.sleep(5)
         else:
+            created = str((curTime - member.created_at).days)
+            joined = str((curTime - member.joined_at).days)
+
             hasRoles = ""
             userValid = False
             every1 = True
@@ -77,7 +114,7 @@ class utils(commands.Cog):
                 hasRoles = "None"
 
             embed = discord.Embed(
-                description = (f"Seller Check: <@!{member.id}> can {trustLevel} in the server."),
+                description = (f"{member.mention} was created {self.days(created)} and joined {self.days(joined)}\nSeller Check: Can {trustLevel} in the server."),
                 color = eColor
             )
             embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
