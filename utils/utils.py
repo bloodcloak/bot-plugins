@@ -102,11 +102,8 @@ class utils(commands.Cog):
                 hasRoles = f"<@&{y.id}> " + hasRoles
 
             if userValid:
-                if not eColor:
-                    eColor = discord.Color.dark_green()
-                trustLevel = "✅ can"
-            elif "844023915830968350" in hasRoles:
-                eColor = discord.Color.green()
+                if eColor:
+                    eColor = discord.Color.green()
                 trustLevel = "✅ can"
             else:
                 eColor = discord.Color.orange()
