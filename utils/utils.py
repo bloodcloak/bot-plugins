@@ -77,9 +77,10 @@ class utils(commands.Cog):
                 logger.warning(f"{datetime.now()} WARN | {message.author} ({message.author.id}) Set the table to kalm. (10 min in server and email required)")
 
     @commands.command()
-    async def rolecheck(self, ctx, member: discord.Member = None):
+    async def checkuser(self, ctx, member: discord.Member = None):
         """Check a server members roles to see if they are allowed to sell on the server.\nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`"""
         curTime = datetime.utcnow()
+        eColor = None
 
         if member == None:
                 await ctx.send('Error: No user defined. \nUsage: `?roleCheck <userID>` | Example: `?roleCheck 843260310055550986`')
@@ -101,20 +102,21 @@ class utils(commands.Cog):
                 hasRoles = f"<@&{y.id}> " + hasRoles
 
             if userValid:
-                eColor = discord.Color.green()
-                trustLevel = "sell"
+                if not eColor:
+                    eColor = discord.Color.dark_green()
+                trustLevel = "✅ can"
             elif "844023915830968350" in hasRoles:
-                eColor = discord.Color.blue()
-                trustLevel = "sell"
+                eColor = discord.Color.green()
+                trustLevel = "✅ can"
             else:
                 eColor = discord.Color.orange()
-                trustLevel = "**NOT** sell"
+                trustLevel = "❌ **CANNOT**"
 
             if not hasRoles:
                 hasRoles = "None"
 
             embed = discord.Embed(
-                description = (f"{member.mention} was created {self.days(created)} and joined {self.days(joined)}\n\nUser can {trustLevel} commissions in the server."),
+                description = (f"{member.mention}\n`Created:` {self.days(created)} `Joined:` {self.days(joined)}\nThis user {trustLevel} sell commissions in the server."),
                 color = eColor
             )
             embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
