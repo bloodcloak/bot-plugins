@@ -114,7 +114,7 @@ class utils(commands.Cog):
                 hasRoles = "None"
 
             embed = discord.Embed(
-                description = (f"{member.mention} was created {self.days(created)} and joined {self.days(joined)}\nSeller Check: Can {trustLevel} in the server."),
+                description = (f"{member.mention} was created {self.days(created)} and joined {self.days(joined)}\n\nUser can {trustLevel} commissions in the server."),
                 color = eColor
             )
             embed.set_author(name=f"{member} ({member.id})", icon_url=str(member.avatar_url))
