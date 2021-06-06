@@ -80,7 +80,7 @@ class utils(commands.Cog):
     async def checkuser(self, ctx, member: discord.Member = None):
         """Check a server members roles to see if they are allowed to sell on the server.\n\nUsage: `?roleCheck <username or ID>` \nExample: `?roleCheck "Mod Mail#4190"` or `?roleCheck 843260310055550986`"""
         
-        if str(ctx.channel.id) == '850623919971106866' or "Staff" in ctx.author.roles or "Moderator" in ctx.author.roles:    
+        if str(ctx.channel.id) == '850623919971106866' or str(ctx.channel.id) == '847323488342900746':    
             curTime = datetime.utcnow()
             eColor = discord.Color.orange()
 
