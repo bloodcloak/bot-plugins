@@ -78,7 +78,7 @@ class utils(commands.Cog):
 
     @commands.command()
     async def checkuser(self, ctx, member: discord.Member = None):
-        """Check a server members roles to see if they are allowed to sell on the server.\n\nUsage: `?roleCheck <username or ID>` \nExample: `?roleCheck "Mod Mail#4190"` or `?roleCheck 843260310055550986`"""
+        """Check a server members roles to see if they are allowed to sell on the server.\n\nUsage: `?checkuser <username or ID>` \nExample: `?checkuser "Mod Mail#4190"` or `?checkuser 843260310055550986`"""
         
         if str(ctx.channel.id) == '850623919971106866' or str(ctx.channel.id) == '847323488342900746':    
             curTime = datetime.utcnow()
