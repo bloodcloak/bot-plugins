@@ -15,7 +15,7 @@ class miscCmds(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self.guild = bot.get_guild(int('842915739111653376'))
-        self.welcomeChan = str('842915739111653379')
+        self.welcomeChan = bot.get_channel(int('842915739111653379'))
         self.pingChannel = bot.get_channel(int('842940696485822475'))
         self.timeDelta = timedelta(seconds=45)
         self.pingCooldown = False
@@ -50,7 +50,7 @@ class miscCmds(commands.Cog):
                 self.pingCooldown = False
                 logger.warning(f"{loggingTime} +++++ Ping Cooldown Reset!")
 
-        if len(welCopy) >= 5:
+        if len(welCopy) >= 3:
             logger.warning(f"{loggingTime} +++++ Unusual Join Activity Detected +++++++")
             if self.pingCooldown:
                 logger.warning(f"+++++ | Ping In Cooldown | +++++++")
@@ -59,6 +59,7 @@ class miscCmds(commands.Cog):
                 self.pingCooldown = True
                 self.rmCooldown = datetime.now() + timedelta(minutes=5)
                 logger.warning(f"+++++ | Ping Sent | +++++++")
+                await self.welcomeChan.send("Unusual Join Activity Detected Above")
             
 
         for storeKey, obj in welCopy.items():
