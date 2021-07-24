@@ -162,4 +162,6 @@ class moderation(commands.Cog):
                     logger.warning(f"Phrase Listing Iteration {txtCount}")
             else:
                 await message.send(sendString)
-    
+
+def setup(bot):
+    bot.add_cog(moderation(bot))
