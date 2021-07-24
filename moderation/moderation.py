@@ -111,7 +111,7 @@ class moderation(commands.Cog):
     async def phrasefilter(self, message, action, *, phrase=None):
         validActions = ('add', 'remove', 'list')
         if action not in validActions:
-            await message.send('Invalid Args. Usage: `?phraseFilter <action> Valid Actions: `add`, `remove`, `list`')
+            await message.send('Invalid Args. Usage: `?phraseFilter <action> [phrase]` Valid Actions: `add`, `remove`, `list`')
         else:
             await self._FilterManager(message,action, phrase, self.badPhrases)
             logger.warning(f"{message.author} ({message.author.id}) Invoked Phrase Filter '{action}' Phrase: '{phrase}")
@@ -121,7 +121,7 @@ class moderation(commands.Cog):
     async def scamfilter(self, message, action, *, phrase=None):
         validActions = ('add', 'remove', 'list')
         if action not in validActions:
-            await message.send('Invalid Args. Usage: `?scamFilter <action> Valid Actions: `add`, `remove`, `list`')
+            await message.send('Invalid Args. Usage: `?scamFilter <action> [phrase]` Valid Actions: `add`, `remove`, `list`')
         else:
             await self._FilterManager(message,action, phrase, self.scamPhrases)
             logger.warning(f"{message.author} ({message.author.id}) Invoked Scam Filter '{action}' Phrase: '{phrase}")
