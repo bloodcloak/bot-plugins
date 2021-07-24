@@ -51,9 +51,7 @@ class moderation(commands.Cog):
         # Bad Phrase Filter Check
         uContent = msg.content
         for phrase in self.badPhrases:
-            if uContent.find(phrase) == -1:
-                continue
-            else:
+            if phrase in uContent:
                 # Trigger Found
                 logger.warning(f"User {msg.author} Triggered Phrase Filter")
                 await msg.message.delete()
@@ -73,9 +71,7 @@ class moderation(commands.Cog):
         # Scam Phrase Filter Check
         uContent = msg.content
         for phrase in self.scamPhrases:
-            if uContent.find(phrase) == -1:
-                continue
-            else:
+            if phrase in uContent:
                 # Trigger Found
                 logger.warning(f"User {msg.author} Triggered Scam Filter")
                 try:
@@ -136,14 +132,14 @@ class moderation(commands.Cog):
         if action == 'add':
             if phrase == None:
                 await message.send(f"`Missing Arg: `phrase`!")
-            if phraseList.find(phrase) == -1:
+            if not phrase in phraseList:
                 phraseList.append(phrase)
                 await message.send(f"Added `{phrase} to Phrase Filter!")
                 self._updateDB()
             else:
                 await message.send(f"`{phrase} already exists in filter!")
         elif action == 'remove':
-            if phraseList.find(phrase) == -1:
+            if not phrase in phraseList:
                 await message.send(f"`{phrase} not found in Phrase Filter!")
             else:
                 phraseList.remove(phrase)
