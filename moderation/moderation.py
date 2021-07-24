@@ -22,21 +22,19 @@ class moderation(commands.Cog):
         self.excludeRoles = ("Admin", "Staff", "Moderator")
         self.badPhrases = []
         self.scamPhrases = []
-        self._dbStartup()
 
-    def _dbStartup(self):
+    async def on_ready(self):
         logger.warning("Setup DB")
-        self.bot.wait_until_ready()
-        badPhrases = self.db.find_one({"_id": "badPhrases"})
-        scamPhrases = self.db.find_one({"_id": "scamPhrases"})
+        badPhrases = await self.db.find_one({"_id": "badPhrases"})
+        scamPhrases = await self.db.find_one({"_id": "scamPhrases"})
 
         if badPhrases is None:
-            self.db.find_one_and_update({"_id": "badPhrases"}, {"$set": {"badPhrases": list()}}, upsert=True)
-            badPhrases = self.db.find_one({"_id": "badPhrases"})
+            await self.db.find_one_and_update({"_id": "badPhrases"}, {"$set": {"badPhrases": list()}}, upsert=True)
+            badPhrases = await self.db.find_one({"_id": "badPhrases"})
 
         if scamPhrases is None:
-            self.db.find_one_and_update({"_id": "scamPhrases"}, {"$set": {"scamPhrases": list()}}, upsert=True)
-            scamPhrases = self.db.find_one({"_id": "scamPhrases"})
+            await self.db.find_one_and_update({"_id": "scamPhrases"}, {"$set": {"scamPhrases": list()}}, upsert=True)
+            scamPhrases = await self.db.find_one({"_id": "scamPhrases"})
         
         self.badPhrases = badPhrases.get("badPhrases", list())
         self.scamPhrases = scamPhrases.get("scamPhrases", list())
