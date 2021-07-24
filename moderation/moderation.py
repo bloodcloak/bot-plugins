@@ -41,8 +41,8 @@ class moderation(commands.Cog):
         logger.warning("Setup Complete")
 
     @commands.Cog.listener()
-    async def on_message(self, ctx):
-        msg = ctx.message
+    async def on_message(self, message):
+        msg = message.message
         if msg.author.bot: return
 
         for y in msg.author.roles:
@@ -77,7 +77,7 @@ class moderation(commands.Cog):
                     embed.add_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
 
                 await msg.delete()
-                return await ctx.send(embed=embed)
+                return await msg.send(embed=embed)
 
         # Bad Phrase Filter Check
         for phrase in self.badPhrases:
