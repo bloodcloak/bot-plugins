@@ -54,7 +54,7 @@ class moderation(commands.Cog):
             if phrase in uContent:
                 # Trigger Found
                 logger.warning(f"User {msg.author} Triggered Phrase Filter")
-                await msg.message.delete()
+                await msg.delete()
 
                 embed = discord.Embed(
                     title = "Phrase Filter Triggered",
@@ -95,7 +95,7 @@ class moderation(commands.Cog):
                     embed.set_field(name="Content Cont.", value=f"{uContent[900:1800]}", inline=False)
                     embed.set_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
 
-                await msg.message.delete()
+                await msg.delete()
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
@@ -154,7 +154,7 @@ class moderation(commands.Cog):
             # List out the list
             sendString = "Filtered Phrases: "
             for phrase in phraseList:
-                sendString += f"`{phrase}` "
+                sendString += f"`{phrase}`, "
             strLen = len(sendString)
             if strLen > 1900:
                 txtCount = 0
