@@ -68,12 +68,12 @@ class moderation(commands.Cog):
                         description = (f"Message Deleted | User Kicked"),
                         color = discord.Color.red()
                     )
-                    embed.add_field(name="User", value=f"{msg.author.mention} {msg.author.name} ({msg.author.id})", inline=True)
+                    embed.add_field(name="User", value=f"{msg.author.mention} {msg.author.name} ({msg.author.id})", inline=False)
                     embed.add_field(name="Channel", value=f"{msg.channel.mention}", inline=True)
                     embed.add_field(name="Phrase", value=f"{phrase}", inline=True)
-                    embed.add_field(name="Content", value=f"{uContent[:900]}", inline=False)
-                    if uContent[900:1800]: embed.add_field(name="Content Cont.", value=f"{uContent[900:1800]}", inline=False)
-                    if uContent[1800:2700]: embed.add_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
+                    embed.add_field(name="Content", value=f"```{uContent[:900]}```", inline=False)
+                    if uContent[900:1800]: embed.add_field(name="Content Cont.", value=f"```{uContent[900:1800]}```", inline=False)
+                    if uContent[1800:2700]: embed.add_field(name="Content Cont..", value=f"```{uContent[1800:2700]}```", inline=False)
 
                 await msg.delete()
                 return await self.logChannel.send(embed=embed)
@@ -90,12 +90,12 @@ class moderation(commands.Cog):
                     description = (f"Message Deleted"),
                     color = discord.Color.red()
                 )
-                embed.add_field(name="User", value=f"{msg.author.mention} {msg.author.name} ({msg.author.id})", inline=True)
+                embed.add_field(name="User", value=f"{msg.author.mention} {msg.author.name} ({msg.author.id})", inline=False)
                 embed.add_field(name="Channel", value=f"{msg.channel.mention}", inline=True)
                 embed.add_field(name="Phrase", value=f"{phrase}", inline=True)
-                embed.add_field(name="Content", value=f"{uContent[:900]}", inline=False)
-                if uContent[900:1800]: embed.add_field(name="Content Cont.", value=f"{uContent[900:1800]}", inline=False)
-                if uContent[1800:2700]: embed.add_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
+                embed.add_field(name="Content", value=f"```{uContent[:900]}```", inline=False)
+                if uContent[900:1800]: embed.add_field(name="Content Cont.", value=f"```{uContent[900:1800]}```", inline=False)
+                if uContent[1800:2700]: embed.add_field(name="Content Cont..", value=f"```{uContent[1800:2700]}```", inline=False)
                 return await self.logChannel.send(embed=embed)
 
     async def cog_command_error(self, ctx, error):
