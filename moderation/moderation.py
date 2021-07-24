@@ -152,7 +152,9 @@ class moderation(commands.Cog):
                 await self._updateDB()
         else:
             # List out the list
-            sendString = " , ".join(phraseList)
+            sendString = "Filtered Phrases: "
+            for phrase in phraseList:
+                sendString += f"`{phrase}` "
             strLen = len(sendString)
             if strLen > 1900:
                 txtCount = 0
