@@ -96,7 +96,7 @@ class moderation(commands.Cog):
                 embed.add_field(name="Content", value=f"{uContent[:900]}", inline=False)
                 embed.add_field(name="Content Cont.", value=f"{uContent[900:1800]}", inline=False)
                 embed.add_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
-                return await msg.send(embed=embed)
+                return await self.logChannel.send(embed=embed)
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
