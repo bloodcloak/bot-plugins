@@ -29,15 +29,15 @@ class moderation(commands.Cog):
         scamPhrases = await self.db.find_one({"_id": "scamPhrases"})
 
         if badPhrases is None:
-            await self.db.find_one_and_update({"_id": "badPhrases"}, {"$set": {"badPhrases": list()}}, upsert=True)
+            await self.db.find_one_and_update({"_id": "badPhrases"}, {"$set": {"badPhrases": dict()}}, upsert=True)
             badPhrases = await self.db.find_one({"_id": "badPhrases"})
 
         if scamPhrases is None:
-            await self.db.find_one_and_update({"_id": "scamPhrases"}, {"$set": {"scamPhrases": list()}}, upsert=True)
+            await self.db.find_one_and_update({"_id": "scamPhrases"}, {"$set": {"scamPhrases": dict()}}, upsert=True)
             scamPhrases = await self.db.find_one({"_id": "scamPhrases"})
         
-        self.badPhrases = badPhrases.get("badPhrases", list())
-        self.scamPhrases = scamPhrases.get("scamPhrases", list())
+        self.badPhrases = badPhrases.get("badPhrases", dict())["phrases"]
+        self.scamPhrases = scamPhrases.get("scamPhrases", dict())["phrases"]
         logger.warning("Setup Complete")
 
     @commands.Cog.listener()
@@ -124,8 +124,13 @@ class moderation(commands.Cog):
             await self._FilterManager(message,action, phrase, self.scamPhrases)
 
     async def _updateDB(self):
-        await self.db.find_one_and_update({"_id": "badPhrases"}, {"$set": {"badPhrases": self.badPhrases}}, upsert=True)
-        await self.db.find_one_and_update({"_id": "scamPhrases"}, {"$set": {"scamPhrases": self.scamPhrases}}, upsert=True)
+        obstoreB = {}
+        obstoreS = {}
+
+        obstoreB["phrases"] = self.badPhrases
+        obstoreS["phrases"] = self.scamPhrases
+        await self.db.find_one_and_update({"_id": "badPhrases"}, {"$set": {"badPhrases": obstoreB}}, upsert=True)
+        await self.db.find_one_and_update({"_id": "scamPhrases"}, {"$set": {"scamPhrases": obstoreS}}, upsert=True)
     
 
     async def _FilterManager(self, message, action, phrase, phraseList):
