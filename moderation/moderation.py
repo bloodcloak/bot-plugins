@@ -107,7 +107,7 @@ class moderation(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def phrasefilter(self, message, action, phrase=None):
+    async def phrasefilter(self, message, action, *, phrase=None):
         validActions = ('add', 'remove', 'list')
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?phraseFilter <action> Valid Actions: `add`, `remove`, `list`')
@@ -116,7 +116,7 @@ class moderation(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def scamfilter(self, message, action, phrase=None):
+    async def scamfilter(self, message, action, *, phrase=None):
         validActions = ('add', 'remove', 'list')
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?scamFilter <action> Valid Actions: `add`, `remove`, `list`')
@@ -134,16 +134,16 @@ class moderation(commands.Cog):
                 await message.send(f"`Missing Arg: `phrase`!")
             if not phrase in phraseList:
                 phraseList.append(phrase.lower())
-                await message.send(f"Added `{phrase.lower()} to Phrase Filter!")
+                await message.send(f"Added `{phrase.lower()}` to Phrase Filter!")
                 await self._updateDB()
             else:
-                await message.send(f"`{phrase.lower()} already exists in filter!")
+                await message.send(f"`{phrase.lower()}` already exists in filter!")
         elif action == 'remove':
             if not phrase in phraseList:
-                await message.send(f"`{phrase.lower()} not found in Phrase Filter!")
+                await message.send(f"`{phrase.lower()}` not found in Phrase Filter!")
             else:
                 phraseList.remove(phrase.lower())
-                await message.send(f"`{phrase.lower()} removed from Phrase Filter!")
+                await message.send(f"`{phrase.lower()}` removed from Phrase Filter!")
                 await self._updateDB()
         else:
             # List out the list
