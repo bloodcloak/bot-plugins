@@ -125,7 +125,7 @@ class moderation(commands.Cog):
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?scamFilter <action> Valid Actions: `add`, `remove`, `list`')
         else:
-            self._FilterManager(message,action, phrase, self.scamPhrases)
+            await self._FilterManager(message,action, phrase, self.scamPhrases)
 
     async def _updateDB(self):
         await self.db.find_one_and_update({"_id": "badPhrases"}, {"$set": {"badPhrases": self.badPhrases}}, upsert=True)
