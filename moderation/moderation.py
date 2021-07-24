@@ -113,7 +113,7 @@ class moderation(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def phraseFilter(self, message, action, phrase):
+    async def phrasefilter(self, message, action, phrase):
         validActions = ('add', 'remove', 'list')
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?phraseFilter <action> Valid Actions: `add`, `remove`, `list`')
@@ -122,7 +122,7 @@ class moderation(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def scamFilter(self, message, action, phrase):
+    async def scamfilter(self, message, action, phrase):
         validActions = ('add', 'remove', 'list')
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?scamFilter <action> Valid Actions: `add`, `remove`, `list`')
