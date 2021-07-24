@@ -45,7 +45,7 @@ class moderation(commands.Cog):
         if msg.author.bot: return
 
         for y in msg.author.roles:
-            if y in self.excludeRoles:
+            if y.name in self.excludeRoles:
                 return
 
         # Bad Phrase Filter Check
@@ -81,7 +81,7 @@ class moderation(commands.Cog):
                     return
 
                 if userObj:
-                    await userObj.kick(reason="Scam Phrase Filter Triggered")
+                    await self.guild.kick(userObj, reason="Scam Phrase Filter Triggered")
 
                     embed = discord.Embed(
                         title = "Scam Filter Triggered",
