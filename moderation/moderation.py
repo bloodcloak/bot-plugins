@@ -69,7 +69,7 @@ class moderation(commands.Cog):
                 embed.set_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
         
         # Scam Phrase Filter Check
-        uContent = msg.content
+        uContent = msg.content.lower()
         for phrase in self.scamPhrases:
             if phrase in uContent:
                 # Trigger Found
@@ -133,18 +133,18 @@ class moderation(commands.Cog):
             if phrase == None:
                 await message.send(f"`Missing Arg: `phrase`!")
             if not phrase in phraseList:
-                phraseList.append(phrase)
-                await message.send(f"Added `{phrase} to Phrase Filter!")
-                self._updateDB()
+                phraseList.append(phrase.lower())
+                await message.send(f"Added `{phrase.lower()} to Phrase Filter!")
+                await self._updateDB()
             else:
-                await message.send(f"`{phrase} already exists in filter!")
+                await message.send(f"`{phrase.lower()} already exists in filter!")
         elif action == 'remove':
             if not phrase in phraseList:
-                await message.send(f"`{phrase} not found in Phrase Filter!")
+                await message.send(f"`{phrase.lower()} not found in Phrase Filter!")
             else:
-                phraseList.remove(phrase)
-                await message.send(f"`{phrase} removed from Phrase Filter!")
-                self._updateDB()
+                phraseList.remove(phrase.lower())
+                await message.send(f"`{phrase.lower()} removed from Phrase Filter!")
+                await self._updateDB()
         else:
             # List out the list
             sendString = " ".join(phraseList)
