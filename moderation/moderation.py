@@ -113,7 +113,7 @@ class moderation(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def phrasefilter(self, message, action, phrase):
+    async def phrasefilter(self, message, action, phrase=None):
         validActions = ('add', 'remove', 'list')
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?phraseFilter <action> Valid Actions: `add`, `remove`, `list`')
@@ -122,7 +122,7 @@ class moderation(commands.Cog):
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
-    async def scamfilter(self, message, action, phrase):
+    async def scamfilter(self, message, action, phrase=None):
         validActions = ('add', 'remove', 'list')
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?scamFilter <action> Valid Actions: `add`, `remove`, `list`')
@@ -136,6 +136,8 @@ class moderation(commands.Cog):
 
     async def _FilterManager(self, message, action, phrase, phraseList):
         if action == 'add':
+            if phrase == None:
+                await message.send(f"`Missing Arg: `phrase`!")
             if phraseList.find(phrase) == -1:
                 phraseList.append(phrase)
                 await message.send(f"Added `{phrase} to Phrase Filter!")
