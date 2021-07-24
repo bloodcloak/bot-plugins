@@ -47,29 +47,9 @@ class moderation(commands.Cog):
         for y in msg.author.roles:
             if y.name in self.excludeRoles:
                 return
-
-        # Bad Phrase Filter Check
-        uContent = msg.content
-        for phrase in self.badPhrases:
-            if phrase in uContent:
-                # Trigger Found
-                logger.warning(f"User {msg.author} Triggered Phrase Filter")
-                await msg.delete()
-
-                embed = discord.Embed(
-                    title = "Phrase Filter Triggered",
-                    description = (f"Message Deleted"),
-                    color = discord.Color.red()
-                )
-                embed.add_field(name="User", value=f"{msg.author.mention} {msg.author.name} ({msg.author.id})", inline=True)
-                embed.add_field(name="Channel", value=f"{msg.channel.mention}", inline=True)
-                embed.add_field(name="Phrase", value=f"{phrase}", inline=True)
-                embed.add_field(name="Content", value=f"{uContent[:900]}", inline=False)
-                embed.add_field(name="Content Cont.", value=f"{uContent[900:1800]}", inline=False)
-                embed.add_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
-        
-        # Scam Phrase Filter Check
         uContent = msg.content.lower()
+
+        # Scam Phrase Filter Check
         for phrase in self.scamPhrases:
             if phrase in uContent:
                 # Trigger Found
@@ -96,6 +76,27 @@ class moderation(commands.Cog):
                     embed.add_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
 
                 await msg.delete()
+                return await msg.send(embed=embed)
+
+        # Bad Phrase Filter Check
+        for phrase in self.badPhrases:
+            if phrase in uContent:
+                # Trigger Found
+                logger.warning(f"User {msg.author} Triggered Phrase Filter")
+                await msg.delete()
+
+                embed = discord.Embed(
+                    title = "Phrase Filter Triggered",
+                    description = (f"Message Deleted"),
+                    color = discord.Color.red()
+                )
+                embed.add_field(name="User", value=f"{msg.author.mention} {msg.author.name} ({msg.author.id})", inline=True)
+                embed.add_field(name="Channel", value=f"{msg.channel.mention}", inline=True)
+                embed.add_field(name="Phrase", value=f"{phrase}", inline=True)
+                embed.add_field(name="Content", value=f"{uContent[:900]}", inline=False)
+                embed.add_field(name="Content Cont.", value=f"{uContent[900:1800]}", inline=False)
+                embed.add_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
+                return await msg.send(embed=embed)
 
     async def cog_command_error(self, ctx, error):
         """Checks errors"""
