@@ -53,7 +53,7 @@ class moderation(commands.Cog):
         for phrase in self.scamPhrases:
             if phrase in uContent:
                 # Trigger Found
-                logger.warning(f"User {msg.author} Triggered Scam Filter")
+                logger.warning(f"User {msg.author} ({msg.author.id}) Triggered Scam Filter")
                 try:
                     userObj = await self.bot.fetch_user(int(msg.author.id))
                 except Exception:
@@ -82,7 +82,7 @@ class moderation(commands.Cog):
         for phrase in self.badPhrases:
             if phrase in uContent:
                 # Trigger Found
-                logger.warning(f"User {msg.author} Triggered Phrase Filter")
+                logger.warning(f"User {msg.author} ({msg.author.id}) Triggered Phrase Filter")
                 await msg.delete()
 
                 embed = discord.Embed(
@@ -114,6 +114,7 @@ class moderation(commands.Cog):
             await message.send('Invalid Args. Usage: `?phraseFilter <action> Valid Actions: `add`, `remove`, `list`')
         else:
             await self._FilterManager(message,action, phrase, self.badPhrases)
+            logger.warning(f"{message.author} ({message.author.id}) Invoked Phrase Filter '{action}' Phrase: '{phrase}")
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
@@ -123,6 +124,7 @@ class moderation(commands.Cog):
             await message.send('Invalid Args. Usage: `?scamFilter <action> Valid Actions: `add`, `remove`, `list`')
         else:
             await self._FilterManager(message,action, phrase, self.scamPhrases)
+            logger.warning(f"{message.author} ({message.author.id}) Invoked Scam Filter '{action}' Phrase: '{phrase}")
 
     async def _updateDB(self):
         obstoreB = {}
