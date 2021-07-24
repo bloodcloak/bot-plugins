@@ -134,20 +134,20 @@ class moderation(commands.Cog):
                 await message.send(f"`Missing Arg: `phrase`!")
             if not phrase in phraseList:
                 phraseList.append(phrase.lower())
-                await message.send(f"Added `{phrase.lower()}` to Phrase Filter!")
+                await message.send(f"Added `{phrase.lower()}` to Filter!")
                 await self._updateDB()
             else:
                 await message.send(f"`{phrase.lower()}` already exists in filter!")
         elif action == 'remove':
             if not phrase in phraseList:
-                await message.send(f"`{phrase.lower()}` not found in Phrase Filter!")
+                await message.send(f"`{phrase.lower()}` not found in Filter!")
             else:
                 phraseList.remove(phrase.lower())
-                await message.send(f"`{phrase.lower()}` removed from Phrase Filter!")
+                await message.send(f"`{phrase.lower()}` removed from Filter!")
                 await self._updateDB()
         else:
             # List out the list
-            sendString = " ".join(phraseList)
+            sendString = " | ".join(phraseList)
             strLen = len(sendString)
             if strLen > 1900:
                 txtCount = 0
