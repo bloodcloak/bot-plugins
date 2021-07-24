@@ -112,7 +112,7 @@ class moderation(commands.Cog):
         if action not in validActions:
             await message.send('Invalid Args. Usage: `?phraseFilter <action> Valid Actions: `add`, `remove`, `list`')
         else:
-            self._FilterManager(message,action, phrase, self.badPhrases)
+            await self._FilterManager(message,action, phrase, self.badPhrases)
 
     @commands.command()
     @checks.has_permissions(PermissionLevel.MODERATOR)
@@ -152,7 +152,7 @@ class moderation(commands.Cog):
                 await self._updateDB()
         else:
             # List out the list
-            sendString = " | ".join(phraseList)
+            sendString = " , ".join(phraseList)
             strLen = len(sendString)
             if strLen > 1900:
                 txtCount = 0
