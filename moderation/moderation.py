@@ -90,7 +90,7 @@ class moderation(commands.Cog):
                     description = (f"Message Deleted"),
                     color = discord.Color.red()
                 )
-                embed.add_field(name="User", value=f"{msg.author.mention} {msg.author.name} ({msg.author.id})", inline=False)
+                embed.add_field(name="User", value=f"{msg.author.mention} {msg.author} ({msg.author.id})", inline=False)
                 embed.add_field(name="Channel", value=f"{msg.channel.mention}", inline=True)
                 embed.add_field(name="Phrase", value=f"{phrase}", inline=True)
                 embed.add_field(name="Content", value=f"```{uContent[:900]}```", inline=False)
