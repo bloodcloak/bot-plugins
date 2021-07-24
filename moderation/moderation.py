@@ -77,7 +77,7 @@ class moderation(commands.Cog):
                     embed.add_field(name="Content Cont..", value=f"{uContent[1800:2700]}", inline=False)
 
                 await msg.delete()
-                return await msg.send(embed=embed)
+                return await message.send(embed=embed)
 
         # Bad Phrase Filter Check
         for phrase in self.badPhrases:
