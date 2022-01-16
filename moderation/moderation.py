@@ -9,6 +9,8 @@ from core import checks
 from core.models import PermissionLevel
 from datetime import datetime
 import logging
+import requests, json
+
 
 logger = logging.getLogger()
 
@@ -22,6 +24,8 @@ class moderation(commands.Cog):
         self.excludeRoles = ("Admin", "Staff", "Moderator")
         self.badPhrases = []
         self.scamPhrases = []
+        self.scamDomains = []
+        self.updateDomains.start()
 
     async def on_ready(self):
         logger.warning("Setup DB")
@@ -38,7 +42,17 @@ class moderation(commands.Cog):
         
         self.badPhrases = badPhrases.get("badPhrases", dict())["phrases"]
         self.scamPhrases = scamPhrases.get("scamPhrases", dict())["phrases"]
+
         logger.warning("Setup Complete")
+
+    @tasks.loop(hours=24)
+    async def updateDomains(self):
+        logger.warning("Starting Scam Domain Update")
+        url = "https://raw.githubusercontent.com/nikolaischunk/discord-phishing-links/main/domain-list.json"
+        resp = requests.get(url)
+        data = json.loads(resp.text)
+        self.scamDomains = data["domains"]
+        logger.warning("Scam Domain Update Complete")
 
     @commands.Cog.listener()
     async def on_message(self, msg):
@@ -48,6 +62,47 @@ class moderation(commands.Cog):
             if y.name in self.excludeRoles:
                 return
         uContent = msg.content.lower()
+
+        # Scam Domain Check
+        for domain in self.scamDomains:
+            if domain in uContent:
+                # Trigger Found
+                logger.warning(f"User {msg.author} ({msg.author.id}) Triggered Scam Domain Filter")
+                try:
+                    userObj = await self.bot.fetch_user(int(msg.author.id))
+                except Exception:
+                    logger.warning(f"User {msg.author} For Kick Not Found")
+                    return
+
+                if userObj:
+                    await self.guild.kick(userObj, reason="Scam Domain Filter Triggered")
+
+                    embed = discord.Embed(
+                        title = "Scam Filter Triggered",
+                        description = (f"Message Deleted | User Kicked"),
+                        color = discord.Color.red()
+                    )
+                    embed.add_field(name="User", value=f"{msg.author.mention} {msg.author} ({msg.author.id})", inline=False)
+                    embed.add_field(name="Channel", value=f"{msg.channel.mention}", inline=True)
+                    embed.add_field(name="Domain", value=f"`{domain}`", inline=True)
+                    embed.add_field(name="Content", value=f"```{uContent[:900]}```", inline=False)
+                    if uContent[900:1800]: embed.add_field(name="Content Cont.", value=f"```{uContent[900:1800]}```", inline=False)
+                    if uContent[1800:2700]: embed.add_field(name="Content Cont..", value=f"```{uContent[1800:2700]}```", inline=False)
+                else:
+                    embed = discord.Embed(
+                        title = "Scam Filter Triggered",
+                        description = (f"Message Deleted | Error Occurred when kicking"),
+                        color = discord.Color.red()
+                    )
+                    embed.add_field(name="User", value=f"{msg.author.mention} {msg.author} ({msg.author.id})", inline=False)
+                    embed.add_field(name="Channel", value=f"{msg.channel.mention}", inline=True)
+                    embed.add_field(name="Domain", value=f"`{domain}`", inline=True)
+                    embed.add_field(name="Content", value=f"```{uContent[:900]}```", inline=False)
+                    if uContent[900:1800]: embed.add_field(name="Content Cont.", value=f"```{uContent[900:1800]}```", inline=False)
+                    if uContent[1800:2700]: embed.add_field(name="Content Cont..", value=f"```{uContent[1800:2700]}```", inline=False)
+
+                await msg.delete()
+                return await self.logChannel.send(embed=embed)
 
         # Scam Phrase Filter Check
         for phrase in self.scamPhrases:
@@ -168,6 +223,13 @@ class moderation(commands.Cog):
                     logger.warning(f"Phrase Listing Iteration {txtCount}")
             else:
                 await message.send(sendString)
+
+    @commands.command()
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    async def stopdomains(self,ctx):
+        self.updateDomains.cancel()
+        logger.warning(f"Domain Updates Stopped by {ctx.author}")
+        await ctx.send("Stopped!")
 
 def setup(bot):
     bot.add_cog(moderation(bot))
