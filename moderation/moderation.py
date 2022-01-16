@@ -48,10 +48,12 @@ class moderation(commands.Cog):
     @tasks.loop(hours=24)
     async def updateDomains(self):
         logger.warning("Starting Scam Domain Update")
-        url = "https://raw.githubusercontent.com/nikolaischunk/discord-phishing-links/main/domain-list.json"
-        with await self.bot.session.get(url) as resp:
-            data = json.loads(resp.text)
-            self.scamDomains = data["domains"]
+
+        resp = await self.bot.session.get(
+            "https://raw.githubusercontent.com/nikolaischunk/discord-phishing-links/main/domain-list.json"
+        )
+        data = json.loads(await resp.text())
+        self.scamDomains = data["domains"]
         logger.warning("Scam Domain Update Complete")
 
     @commands.Cog.listener()
