@@ -9,7 +9,7 @@ from core import checks
 from core.models import PermissionLevel
 from datetime import datetime
 import logging
-import requests, json
+import json
 
 
 logger = logging.getLogger()
@@ -49,9 +49,9 @@ class moderation(commands.Cog):
     async def updateDomains(self):
         logger.warning("Starting Scam Domain Update")
         url = "https://raw.githubusercontent.com/nikolaischunk/discord-phishing-links/main/domain-list.json"
-        resp = requests.get(url)
-        data = json.loads(resp.text)
-        self.scamDomains = data["domains"]
+        with await self.bot.session.get(url) as resp:
+            data = json.loads(resp.text)
+            self.scamDomains = data["domains"]
         logger.warning("Scam Domain Update Complete")
 
     @commands.Cog.listener()
