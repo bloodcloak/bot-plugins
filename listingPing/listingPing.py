@@ -21,7 +21,7 @@ class listingPing(commands.Cog):
         self.pingdMsgs = dict()
         self.handleQueue.start()
 
-        self.monitorChannels = ('842969358355529728', '842933135654387732', '846142270881005668', '842933105996070953', '842933116213002272', '842933126296895519', '842933147209170975', '842933075826704394', '842933044494336011', '842933058221899787', '842933067500617728', '842933083707932703')
+        self.monitorChannels = ('842969358355529728', '842933135654387732', '842933105996070953', '846142270881005668', '842933147209170975', '842933075826704394', '842933044494336011', '842933083707932703')
         self.eColor = (0x28b808, 0xad0dec, 0x1ecfc5, 0xc00995, 0x3498db)
         self.keywords = ('status:', 'payment:', 'budget:')
 
@@ -80,14 +80,23 @@ class listingPing(commands.Cog):
             elif chanIDstr in self.monitorChannels[1]:
                 pingRole = "PC Mod Seller"
                 barColor = self.eColor[1]
-            elif chanIDstr in self.monitorChannels[2:7]:
-                pingRole = "PC Asset Seller"
+            elif chanIDstr in self.monitorChannels[2]:
+                pingRole = "PC Sabers"
                 barColor = self.eColor[2]
-            elif chanIDstr in self.monitorChannels[7]:
+            elif chanIDstr in self.monitorChannels[3]:
+                pingRole = "PC Avatars"
+                barColor = self.eColor[2]
+            elif chanIDstr in self.monitorChannels[4]:
+                pingRole = "PC Other"
+                barColor = self.eColor[2]
+            elif chanIDstr in self.monitorChannels[5]:
                 pingRole = "Quest Mod Seller"
                 barColor = self.eColor[3]
-            elif chanIDstr in self.monitorChannels[8:12]:
-                pingRole = "Quest Asset Seller"
+            elif chanIDstr in self.monitorChannels[6]:
+                pingRole = "Quest Sabers"
+                barColor = self.eColor[4]
+            elif chanIDstr in self.monitorChannels[7]:
+                pingRole = "Quest Other"
                 barColor = self.eColor[4]
             else:
                 logger.error(f"Invalid Indexing Occured: {chanIDstr}")

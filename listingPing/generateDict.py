@@ -1,6 +1,6 @@
 currDict = []
 
-for i in range(12):
+for i in range(8):
     id = input(f"Enter ID {i}: ")
     currDict.append(id)
 
